@@ -1,7 +1,7 @@
 # Graph Report - ChoiceGuard  (2026-10-20)
 
 ## Corpus Check
-- 21 files · ~121,864 words
+- 21 files · ~121,920 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `53df8910`
+- Built from commit: `803f4630`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

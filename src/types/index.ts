@@ -8,6 +8,10 @@ export type HealthCondition =
 export interface UserHealthProfile {
   id: string;
   name: string;
+  relationship?: string; // e.g. 'คุณพ่อ', 'คุณแม่', 'ตัวฉัน (วัยทำงาน)'
+  age?: number;
+  tag?: string; // e.g. 'ผู้สูงอายุ & ความดันโลหิตสูง'
+  avatarIcon?: string;
   condition: HealthCondition;
   dailyBudget: {
     sodiumMg: number;       // e.g. 2000mg WHO, 1500mg HT

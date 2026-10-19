@@ -9,6 +9,7 @@ interface NavbarProps {
   setActiveTab: (tab: 'scan' | 'swap' | 'pantry' | 'dashboard') => void;
   profile: UserHealthProfile;
   onOpenProfileModal: () => void;
+  onOpenBmcModal?: () => void;
   onToggleChat: () => void;
   isChatOpen: boolean;
   activeRecallCount: number;
@@ -19,6 +20,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   profile,
   onOpenProfileModal,
+  onOpenBmcModal,
   onToggleChat,
   isChatOpen,
   activeRecallCount,
@@ -53,12 +55,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="h-10 w-10 md:h-12 md:w-12 rounded-full object-contain shadow-md shadow-teal-500/25 ring-2 ring-teal-500/30 flex-shrink-0"
           />
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 flex-wrap">
               <span className="font-extrabold text-lg md:text-xl tracking-tight bg-gradient-to-r from-teal-700 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
                 ChoiceGuard
               </span>
-              <span className="text-[10px] md:text-xs font-semibold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-800 border border-teal-500/20">
+              <span className="text-[10px] md:text-xs font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-800 border border-teal-500/20">
                 WELLNEXT Future
+              </span>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 hidden sm:inline">
+                ACSP BIG4
               </span>
             </div>
             <p className="text-[11px] text-slate-500 font-medium hidden sm:block">
@@ -115,8 +120,20 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         </div>
 
-        {/* Right Actions: Profile Switcher, Groq Settings & AI Copilot */}
+        {/* Right Actions: Profile Switcher, BMC & SDG, and AI Copilot */}
         <div className="flex items-center gap-2 order-2 md:order-3">
+          {/* BMC & SDG Pitch Deck Button */}
+          {onOpenBmcModal && (
+            <button
+              onClick={onOpenBmcModal}
+              className="glass-pill px-2.5 py-1.5 text-xs font-bold text-teal-800 hover:text-teal-900 border-teal-500/30 hover:border-teal-500 transition hidden sm:flex items-center gap-1 shadow-xs"
+              title="ดูแผนธุรกิจ Business Model Canvas & ผลกระทบ SDG 3, 9, 12"
+            >
+              <span>📋</span>
+              <span>BMC &amp; SDG</span>
+            </button>
+          )}
+
           {/* Active Profile Pill */}
           <button
             onClick={onOpenProfileModal}

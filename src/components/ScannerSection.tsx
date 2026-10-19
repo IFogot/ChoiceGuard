@@ -4,34 +4,42 @@ import React, { useState } from 'react';
 import { FoodProduct, UserHealthProfile } from '../types';
 import { calculateChoiceScore, ScoreBreakdown } from '../lib/scoreCalculator';
 import {
-  ScanBarcode,
-  Search,
+  Scan,
   Camera,
-  CheckCircle2,
-  AlertCircle,
-  ArrowRight,
-  PlusCircle,
-  Award,
+  Search,
   Sparkles,
-  QrCode,
-  Layers,
-  ChevronRight,
-  Upload,
-  Zap,
-  Activity,
-  HeartPulse,
-  Scale,
+  ArrowRight,
   ShieldCheck,
   AlertTriangle,
+  HeartPulse,
+  Award,
+  ChevronRight,
+  Flame,
+  Droplets,
+  Layers,
+  MessageSquare,
+  PackagePlus,
+  Zap,
+  Info,
+  Check,
+  RotateCcw,
+  Activity,
+  Heart,
+  QrCode,
+  GitCompare,
+  CheckCircle2,
+  AlertOctagon,
+  HelpCircle,
+  ExternalLink,
 } from 'lucide-react';
 
 interface ScannerSectionProps {
   products: FoodProduct[];
-  selectedProduct: FoodProduct | null;
+  selectedProduct: FoodProduct;
   onSelectProduct: (product: FoodProduct) => void;
   profile: UserHealthProfile;
   onAddToPantry: (product: FoodProduct) => void;
-  onOpenSmartSwap: (targetSwapId: string) => void;
+  onOpenSmartSwap: (swapId: string) => void;
   onAskNongChoice: (product: FoodProduct) => void;
 }
 
@@ -44,9 +52,14 @@ export const ScannerSection: React.FC<ScannerSectionProps> = ({
   onOpenSmartSwap,
   onAskNongChoice,
 }) => {
+  // Navigation Mode: 'single' | 'compare' | 'gs1'
+  const [activeMode, setActiveMode] = useState<'single' | 'compare' | 'gs1'>('single');
+
   const [barcodeInput, setBarcodeInput] = useState('');
-  const [filterCategory, setFilterCategory] = useState<string>('all');
   const [isScanningSim, setIsScanningSim] = useState(false);
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('all');
+
+  // OCR simulation state
   const [isOcrMode, setIsOcrMode] = useState(false);
   const [ocrProgress, setOcrProgress] = useState(0);
 
@@ -57,6 +70,16 @@ export const ScannerSection: React.FC<ScannerSectionProps> = ({
   const [customSugar, setCustomSugar] = useState(8);
   const [customSatFat, setCustomSatFat] = useState(7);
   const [customCalories, setCustomCalories] = useState(580);
+
+  // On-Shelf Comparator Selected Products (up to 3)
+  const [compareProductIds, setCompareProductIds] = useState<string[]>([
+    products[0]?.id || '',
+    products[1]?.id || '',
+  ]);
+
+  // GS1 Digital Link Simulator State
+  const [gs1SelectedId, setGs1SelectedId] = useState<string>(products[0]?.id || '');
+  const [gs1IngestSuccess, setGs1IngestSuccess] = useState(false);
 
   const activeProduct = selectedProduct || products[0];
   const scoreBreakdown: ScoreBreakdown = calculateChoiceScore(activeProduct, profile);
@@ -92,7 +115,6 @@ export const ScannerSection: React.FC<ScannerSectionProps> = ({
       setOcrProgress(100);
       setTimeout(() => {
         setIsOcrMode(false);
-        // Switch to high-sodium instant noodles to demonstrate OCR result
         onSelectProduct(products[0]);
       }, 500);
     }, 1200);
@@ -118,22 +140,21 @@ export const ScannerSection: React.FC<ScannerSectionProps> = ({
         transFatG: 0,
         cholesterolMg: 45,
         sodiumMg: Number(customSodium),
-        totalCarbG: 65,
+        totalCarbG: 45,
         dietaryFiberG: 2,
         sugarG: Number(customSugar),
-        proteinG: 22,
+        proteinG: 16,
         potassiumMg: 120,
       },
-      healthierChoiceCertified: Number(customSodium) <= 1000 && Number(customSugar) <= 6,
-      traceabilityLotCode: `CUSTOM-LOT-${Date.now().toString().slice(-6)}`,
-      mfgDate: '2026-10-20',
-      expDate: '2026-10-21',
-      manufacturer: 'ผู้ใช้บันทึกเอง',
+      healthierChoiceCertified: false,
+      traceabilityLotCode: `LOT-CUSTOM-${Date.now().toString().slice(-4)}`,
+      mfgDate: new Date().toISOString().split('T')[0],
+      expDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+      manufacturer: 'ร้านอาหารปรุงสดตามสั่ง',
       originCountry: 'ประเทศไทย',
-      ingredients: ['เส้นก๋วยเตี๋ยว', 'เนื้อหมู', 'ซีอิ๊วดำ', 'ซีอิ๊วขาว', 'น้ำปลา', 'คะน้า'],
-      allergens: ['ถั่วเหลือง', 'กลูเตน'],
-      smartSwapId: products[7].id, // swaps to healthy basil chicken
-      warningTags: Number(customSodium) > 1500 ? ['โซเดียมสูงเกินงบวัน', 'เสี่ยงความดันโลหิตสูง'] : [],
+      ingredients: ['เส้นใหญ่ 40%', 'เนื้อหมู 25%', 'คะน้า 20%', 'ซีอิ๊วดำและน้ำมันหอย 15%'],
+      allergens: ['ถั่วเหลือง', 'แป้งสาลี'],
+      warningTags: Number(customSodium) > 1500 ? ['โซเดียมสูงวิกฤต (>1,500 มก.)'] : [],
     };
 
     onSelectProduct(customProd);
@@ -141,533 +162,660 @@ export const ScannerSection: React.FC<ScannerSectionProps> = ({
   };
 
   const filteredProducts = products.filter((p) => {
-    if (filterCategory === 'all') return true;
-    return p.category === filterCategory;
+    if (selectedCategoryFilter === 'all') return true;
+    return p.category === selectedCategoryFilter;
   });
+
+  // GS1 Product lookup
+  const gs1Product = products.find((p) => p.id === gs1SelectedId) || products[0];
+  const gs1Uri = `https://id.choiceguard.th/01/${gs1Product.barcode.padStart(14, '0')}/10/${gs1Product.traceabilityLotCode}/17/${gs1Product.expDate.replace(/-/g, '').slice(2)}/21/SN98412`;
+
+  const handleSimulateGS1Ingest = () => {
+    setGs1IngestSuccess(true);
+    onAddToPantry(gs1Product);
+    setTimeout(() => setGs1IngestSuccess(false), 2500);
+  };
 
   return (
     <section className="space-y-6">
-      {/* Top Search & Interactive OCR Viewfinder Bar */}
-      <div className="glass-panel p-5">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-700 border border-teal-500/20 flex-shrink-0">
-              <ScanBarcode className="h-6 w-6" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-bold text-base md:text-lg text-slate-900">
-                  สแกนบาร์โค้ด หรือถ่ายรูปฉลากโภชนาการ (AI OCR)
-                </h3>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-500/15 text-teal-800 border border-teal-500/25">
-                  อย. 5 วินาที
-                </span>
-              </div>
-              <p className="text-xs text-slate-500">
-                วิเคราะห์ Personalized Choice Score แบบเฉพาะบุคคล พร้อมตรวจสอบย้อนกลับรหัสล็อต (TLC)
-              </p>
-            </div>
-          </div>
+      {/* 1. Mode Switcher Ribbon (Single Scan vs On-Shelf 5-Sec Comparator vs GS1 2D) */}
+      <div className="glass-panel p-3 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-1.5 p-1 bg-slate-100/80 rounded-2xl flex-wrap">
+          <button
+            onClick={() => setActiveMode('single')}
+            className={`px-3.5 py-2 text-xs font-bold rounded-xl transition flex items-center gap-1.5 ${
+              activeMode === 'single'
+                ? 'bg-teal-700 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <Scan className="h-4 w-4" />
+            <span>สแกนเดี่ยว &amp; วิเคราะห์ OCR</span>
+          </button>
 
-          <div className="flex items-center gap-2 w-full md:w-auto">
-            <button
-              onClick={handleTriggerOcrScan}
-              className="glass-button text-xs py-2 px-3.5 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 text-teal-950 font-bold border-teal-500/30 hover:border-teal-500 flex items-center gap-1.5 shadow-sm"
-            >
-              <Camera className="h-4 w-4 text-teal-600" />
-              <span>จำลองถ่ายรูปฉลาก (OCR)</span>
-            </button>
+          <button
+            onClick={() => setActiveMode('compare')}
+            className={`px-3.5 py-2 text-xs font-bold rounded-xl transition flex items-center gap-1.5 ${
+              activeMode === 'compare'
+                ? 'bg-teal-700 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <GitCompare className="h-4 w-4" />
+            <span>เปรียบเทียบหน้าชั้นวาง 5 วิ (On-Shelf Assistant)</span>
+          </button>
 
-            <button
-              onClick={() => setShowCustomModal(true)}
-              className="glass-button text-xs py-2 px-3 bg-white/80 hover:bg-white text-slate-700 font-semibold flex items-center gap-1"
-            >
-              <PlusCircle className="h-4 w-4 text-indigo-600" />
-              <span>ทดสอบอาหารกำหนดเอง</span>
-            </button>
-          </div>
+          <button
+            onClick={() => setActiveMode('gs1')}
+            className={`px-3.5 py-2 text-xs font-bold rounded-xl transition flex items-center gap-1.5 ${
+              activeMode === 'gs1'
+                ? 'bg-teal-700 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <QrCode className="h-4 w-4" />
+            <span>บาร์โค้ด GS1 Digital Link 2D (Roadmap 2028)</span>
+          </button>
         </div>
 
-        {/* OCR Scanning Simulation Overlay */}
-        {isOcrMode && (
-          <div className="mt-4 p-4 rounded-2xl bg-slate-900 text-white relative overflow-hidden shadow-lg animate-fadeIn">
-            <div className="flex items-center justify-between text-xs mb-2">
-              <span className="flex items-center gap-2 font-mono font-bold text-teal-400">
-                <Sparkles className="h-4 w-4 animate-spin text-teal-400" />
-                กำลังสแกนวิเคราะห์ฉลากด้วย Computer Vision &amp; Groq LPU OCR...
-              </span>
-              <span className="font-mono text-teal-300 font-bold">{ocrProgress}%</span>
-            </div>
-
-            <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden mb-3">
-              <div
-                className="bg-gradient-to-r from-teal-400 to-cyan-400 h-full transition-all duration-300"
-                style={{ width: `${ocrProgress}%` }}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono">
-              <div className="bg-slate-800/80 p-2 rounded border border-teal-500/40 text-teal-300">
-                ✓ Bounding Box: [Nutrition Facts]
-              </div>
-              <div className="bg-slate-800/80 p-2 rounded border border-teal-500/40 text-teal-300">
-                ✓ Sodium Detected: 1,680 mg
-              </div>
-              <div className="bg-slate-800/80 p-2 rounded border border-teal-500/40 text-teal-300">
-                ✓ Sugar Detected: 4 g
-              </div>
-              <div className="bg-slate-800/80 p-2 rounded border border-teal-500/40 text-teal-300">
-                ✓ TLC Lot: LOT-2026-TYK-0941
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Barcode Search Form & Quick Presets Filter */}
-        <div className="mt-4 pt-4 border-t border-slate-200/50 flex flex-col md:flex-row items-center justify-between gap-3">
-          <form onSubmit={handleManualSearch} className="flex items-center gap-2 w-full md:w-96">
-            <div className="relative flex-1">
-              <input
-                type="text"
-                placeholder="กรอกรหัสบาร์โค้ด หรือชื่อสินค้า..."
-                value={barcodeInput}
-                onChange={(e) => setBarcodeInput(e.target.value)}
-                className="glass-input pl-9 text-xs sm:text-sm py-2"
-              />
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-            </div>
-            <button
-              type="submit"
-              className="glass-button glass-button-primary text-xs whitespace-nowrap py-2 px-3.5"
-            >
-              ค้นหา
-            </button>
-          </form>
-
-          {/* Category Filter Pills */}
-          <div className="flex gap-1 overflow-x-auto text-[11px] w-full md:w-auto scrollbar-thin">
-            {[
-              { id: 'all', label: 'ทั้งหมด' },
-              { id: 'instant_noodles', label: 'บะหมี่กึ่งสำเร็จรูป' },
-              { id: 'seasoning', label: 'เครื่องปรุงรส' },
-              { id: 'beverage', label: 'เครื่องดื่ม' },
-              { id: 'prepared_food', label: 'อาหารจานด่วน' },
-              { id: 'canned_food', label: 'อาหารกระป๋อง' },
-            ].map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setFilterCategory(cat.id)}
-                className={`px-2.5 py-1 rounded-lg transition whitespace-nowrap font-medium ${
-                  filterCategory === cat.id
-                    ? 'bg-teal-700 text-white shadow-sm'
-                    : 'text-slate-600 hover:bg-slate-200/60 bg-white/50 border border-slate-200/60'
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Horizontal Quick Scan Carousel */}
-        <div className="mt-3">
-          <div className="flex items-center justify-between gap-2 mb-1.5">
-            <span className="text-[11px] font-bold text-slate-600 flex items-center gap-1.5">
-              <QrCode className="h-3.5 w-3.5 text-teal-600" />
-              คลิกเพื่อจำลองการสแกนสินค้าตัวอย่าง (ฐานข้อมูล อย. &amp; สสส.):
-            </span>
-          </div>
-
-          <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-thin">
-            {filteredProducts.map((p) => {
-              const isSelected = activeProduct.id === p.id;
-              return (
-                <button
-                  key={p.id}
-                  onClick={() => handleSimulateScan(p)}
-                  className={`flex-shrink-0 flex items-center gap-2.5 p-2 rounded-xl text-left border transition ${
-                    isSelected
-                      ? 'bg-teal-500/20 border-teal-500 text-teal-950 font-semibold shadow-sm'
-                      : 'bg-white/50 border-slate-200/70 hover:bg-white/80 text-slate-700'
-                  }`}
-                >
-                  <img
-                    src={p.imageUrl}
-                    alt={p.name}
-                    width={36}
-                    height={36}
-                    style={{ width: '36px', height: '36px', maxWidth: '36px', maxHeight: '36px' }}
-                    className="w-9 h-9 rounded-lg object-cover flex-shrink-0"
-                  />
-                  <div className="max-w-[170px] truncate">
-                    <div className="text-[11px] font-bold truncate">{p.name}</div>
-                    <div className="text-[10px] text-slate-500 flex items-center gap-1.5">
-                      <span>{p.nutrition.sodiumMg} mg Na</span>
-                      {p.healthierChoiceCertified && (
-                        <span className="text-[9px] text-teal-800 font-bold bg-teal-100 px-1 rounded">
-                          ★ ทางเลือกสุขภาพ
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <button
+          onClick={() => setShowCustomModal(true)}
+          className="glass-button text-xs py-2 px-3.5 font-bold text-teal-800 bg-teal-50 hover:bg-teal-100 border border-teal-200 flex items-center gap-1.5 shadow-xs"
+        >
+          <Sparkles className="h-3.5 w-3.5 text-teal-600" />
+          <span>คำนวณโภชนาการจานโปรด (Custom Dish)</span>
+        </button>
       </div>
 
-      {/* Main Scanned Product Detail & Deep Multi-Metric Score Analysis */}
-      <div className={`transition-all duration-300 ${isScanningSim ? 'opacity-40 scale-[0.99]' : 'opacity-100 scale-100'}`}>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Column: Product Card & Nutrition Label */}
-          <div className="lg:col-span-4 flex flex-col gap-4">
-            <div className="glass-card overflow-hidden p-5 flex flex-col items-center text-center">
-              <div className="relative w-44 h-44 rounded-2xl overflow-hidden mb-3 shadow-md border border-white/60">
-                <img
-                  src={activeProduct.imageUrl}
-                  alt={activeProduct.name}
-                  width={176}
-                  height={176}
-                  style={{ width: '176px', height: '176px', maxWidth: '176px', maxHeight: '176px' }}
-                  className="w-full h-full object-cover"
-                />
-                {activeProduct.healthierChoiceCertified && (
-                  <div className="absolute top-2 right-2 bg-teal-700 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-md flex items-center gap-1">
-                    <Award className="h-3 w-3" />
-                    อย. รับรอง
-                  </div>
-                )}
+      {/* MODE 1: SINGLE SCAN & OCR SIMULATOR */}
+      {activeMode === 'single' && (
+        <div className="space-y-6 animate-fadeIn">
+          {/* Search & Actions Bar */}
+          <div className="glass-panel p-5">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3 w-full lg:w-auto">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-700 border border-teal-500/20 flex-shrink-0">
+                  <Scan className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base md:text-lg text-slate-900">
+                    สแกนบาร์โค้ด หรือถ่ายรูปฉลากโภชนาการ
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    วิเคราะห์ Choice Score เฉพาะบุคคลใน 5 วินาที พร้อมตรวจสอบย้อนกลับรหัสล็อต
+                  </p>
+                </div>
               </div>
 
-              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 mb-1">
-                {activeProduct.categoryLabel}
-              </span>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
+                <form onSubmit={handleManualSearch} className="flex-1 sm:w-64 relative">
+                  <input
+                    type="text"
+                    value={barcodeInput}
+                    onChange={(e) => setBarcodeInput(e.target.value)}
+                    placeholder="กรอกรหัสบาร์โค้ด หรือชื่อสินค้า..."
+                    className="glass-input text-xs pr-8 py-2.5"
+                  />
+                  <button type="submit" className="absolute right-2 top-2.5 text-slate-400 hover:text-teal-600">
+                    <Search className="h-4 w-4" />
+                  </button>
+                </form>
 
-              <h2 className="text-base md:text-lg font-extrabold text-slate-900 leading-snug">
-                {activeProduct.name}
-              </h2>
-              <p className="text-xs text-slate-500 mb-3">{activeProduct.brand}</p>
+                <button
+                  onClick={handleTriggerOcrScan}
+                  disabled={isOcrMode}
+                  className="glass-button glass-button-primary text-xs py-2.5 px-4 font-bold whitespace-nowrap shadow-sm flex items-center justify-center gap-1.5"
+                >
+                  <Camera className="h-4 w-4" />
+                  <span>{isOcrMode ? `กำลังอ่าน OCR (${ocrProgress}%)...` : 'จำลองถ่ายรูปฉลาก OCR (AI Camera)'}</span>
+                </button>
+              </div>
+            </div>
 
-              {/* Traceability Lot & Barcode Info Box */}
-              <div className="w-full bg-slate-50/80 p-3 rounded-xl border border-slate-200/70 text-left text-xs space-y-1.5 mb-4">
-                <div className="flex justify-between">
-                  <span className="text-slate-500">บาร์โค้ด:</span>
-                  <span className="font-mono font-bold text-slate-800">{activeProduct.barcode}</span>
+            {/* Quick Sample Selector */}
+            <div className="mt-5 pt-4 border-t border-slate-200/60">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold text-slate-600 flex items-center gap-1.5">
+                  <Sparkles className="h-3.5 w-3.5 text-teal-600" />
+                  คลิกเพื่อจำลองการสแกนสินค้าตัวอย่าง (อย. &amp; CDC 2023 Study):
+                </span>
+                <div className="flex items-center gap-1">
+                  {['all', 'instant_noodles', 'condiments', 'beverages'].map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategoryFilter(cat)}
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-lg transition ${
+                        selectedCategoryFilter === cat
+                          ? 'bg-teal-700 text-white'
+                          : 'text-slate-500 hover:bg-slate-100'
+                      }`}
+                    >
+                      {cat === 'all' ? 'ทั้งหมด' : cat === 'instant_noodles' ? 'บะหมี่' : cat === 'condiments' ? 'เครื่องปรุง' : 'เครื่องดื่ม'}
+                    </button>
+                  ))}
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">รหัสล็อต (FSMA TLC):</span>
-                  <span className="font-mono font-bold text-teal-800 bg-teal-50 px-1 rounded border border-teal-200">
-                    {activeProduct.traceabilityLotCode}
-                  </span>
+              </div>
+
+              <div className="flex gap-2.5 overflow-x-auto pb-1.5">
+                {filteredProducts.map((p) => {
+                  const isSelected = activeProduct.id === p.id;
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => handleSimulateScan(p)}
+                      className={`flex-shrink-0 flex items-center gap-2 p-2 rounded-xl text-left border transition ${
+                        isSelected
+                          ? 'bg-teal-50 border-teal-600 ring-2 ring-teal-500/20 shadow-sm'
+                          : 'bg-white/60 hover:bg-white border-slate-200/70'
+                      }`}
+                    >
+                      <img src={p.imageUrl} alt={p.name} className="w-10 h-10 rounded-lg object-cover border border-slate-200" />
+                      <div className="min-w-0 pr-2">
+                        <div className="text-xs font-bold text-slate-800 truncate max-w-[130px]">{p.name}</div>
+                        <div className="text-[10px] text-slate-500 flex items-center gap-1">
+                          <span>{p.nutrition.sodiumMg} mg Na</span>
+                          {p.healthierChoiceCertified && <span className="text-teal-700 font-bold">★ อย.</span>}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Active Product Analysis Card */}
+          <div className="glass-card p-6">
+            {/* Header: Score Ring + Grade + Details */}
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-6 border-b border-slate-200/70">
+              <div className="flex items-center gap-4">
+                <div
+                  className="relative flex items-center justify-center w-24 h-24 rounded-full shadow-lg flex-shrink-0"
+                  style={{
+                    background: `radial-gradient(circle, #ffffff 60%, ${scoreBreakdown.color}25 100%)`,
+                    border: `3px solid ${scoreBreakdown.color}`,
+                  }}
+                >
+                  <div className="flex flex-col items-center">
+                    <span className="text-3xl font-black tracking-tight" style={{ color: scoreBreakdown.color }}>
+                      {scoreBreakdown.finalScore}
+                    </span>
+                    <span className="text-[10px] font-bold uppercase text-slate-500 -mt-1">
+                      เกรด {scoreBreakdown.grade}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">วันผลิต / หมดอายุ:</span>
-                  <span className="text-slate-700 font-medium">
-                    {activeProduct.mfgDate} / {activeProduct.expDate}
-                  </span>
+
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                      Personalized Choice Score
+                    </span>
+                    <span
+                      className="text-[11px] px-2 py-0.5 rounded-full font-bold text-white shadow-sm"
+                      style={{ backgroundColor: scoreBreakdown.color }}
+                    >
+                      เกรด {scoreBreakdown.grade}
+                    </span>
+                  </div>
+                  <h3 className="text-lg md:text-xl font-extrabold text-slate-900 mt-0.5">
+                    {scoreBreakdown.label}
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-1 max-w-md leading-relaxed">
+                    {scoreBreakdown.description} (ปรับเทียบสำหรับ:{' '}
+                    <span className="font-semibold text-slate-800">{profile.name}</span>)
+                  </p>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-2 w-full">
-                <button
-                  onClick={() => onAddToPantry(activeProduct)}
-                  className="glass-button flex-1 text-xs py-2.5 bg-white/90 hover:bg-white text-slate-800 font-semibold shadow-sm flex items-center justify-center gap-1.5"
-                >
-                  <PlusCircle className="h-4 w-4 text-teal-600" />
-                  <span>บันทึกลงคลัง (Lot Alert)</span>
-                </button>
-
-                <button
-                  onClick={() => onAskNongChoice(activeProduct)}
-                  className="glass-button flex-1 text-xs py-2.5 bg-teal-500/20 text-teal-900 hover:bg-teal-500/30 font-bold border-teal-500/30 flex items-center justify-center gap-1.5"
-                >
-                  <Sparkles className="h-4 w-4 text-teal-600" />
-                  <span>ถามน้องช้อยส์ AI</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column: Multi-Dimensional Choice Score Radar & Nutrition Facts */}
-          <div className="lg:col-span-8 flex flex-col gap-5">
-            {/* Top Score Summary Banner */}
-            <div
-              className="glass-panel p-6 border-l-4"
-              style={{ borderLeftColor: scoreBreakdown.color }}
-            >
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-                <div className="flex items-center gap-5">
-                  <div
-                    className="relative flex items-center justify-center w-24 h-24 rounded-full shadow-lg flex-shrink-0"
-                    style={{
-                      background: `radial-gradient(circle, #ffffff 60%, ${scoreBreakdown.color}25 100%)`,
-                      border: `3px solid ${scoreBreakdown.color}`,
-                    }}
-                  >
-                    <div className="flex flex-col items-center">
-                      <span className="text-3xl font-black tracking-tight" style={{ color: scoreBreakdown.color }}>
-                        {scoreBreakdown.finalScore}
-                      </span>
-                      <span className="text-[10px] font-bold uppercase text-slate-500 -mt-1">
-                        เกรด {scoreBreakdown.grade}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                        Personalized Choice Score
-                      </span>
-                      <span
-                        className="text-[11px] px-2 py-0.5 rounded-full font-bold text-white shadow-sm"
-                        style={{ backgroundColor: scoreBreakdown.color }}
-                      >
-                        {scoreBreakdown.grade}
-                      </span>
-                    </div>
-                    <h3 className="text-lg md:text-xl font-extrabold text-slate-900 mt-0.5">
-                      {scoreBreakdown.label}
-                    </h3>
-                    <p className="text-xs text-slate-600 mt-1 max-w-md leading-relaxed">
-                      {scoreBreakdown.description} (ปรับเทียบสำหรับ:{' '}
-                      <span className="font-semibold text-slate-800">{profile.name}</span>)
-                    </p>
-                  </div>
-                </div>
-
-                {/* Smart Swap CTA Button */}
+              <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
                 {activeProduct.smartSwapId && (
                   <button
                     onClick={() => onOpenSmartSwap(activeProduct.smartSwapId!)}
-                    className="glass-button glass-button-primary text-xs md:text-sm py-2.5 px-4 shadow-md w-full sm:w-auto flex-shrink-0 flex items-center justify-center gap-2"
+                    className="glass-button glass-button-primary text-xs py-2.5 px-4 font-bold flex-1 sm:flex-initial flex items-center justify-center gap-1.5 shadow-sm"
                   >
                     <span>ดูทางเลือกที่ดีกว่า (Smart Swap)</span>
                     <ArrowRight className="h-4 w-4" />
                   </button>
                 )}
+
+                <button
+                  onClick={() => onAddToPantry(activeProduct)}
+                  className="glass-button text-xs py-2.5 px-3.5 font-bold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 flex-1 sm:flex-initial flex items-center justify-center gap-1.5 shadow-xs"
+                >
+                  <PackagePlus className="h-4 w-4 text-teal-600" />
+                  <span>บันทึกลงคลัง (เฝ้าระวังล็อต)</span>
+                </button>
+
+                <button
+                  onClick={() => onAskNongChoice(activeProduct)}
+                  className="glass-button text-xs py-2.5 px-3 font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 flex items-center justify-center gap-1"
+                  title="ปรึกษาน้องช้อยส์ AI เกี่ยวกับสินค้านี้"
+                >
+                  <MessageSquare className="h-4 w-4 text-indigo-600" />
+                  <span>ถามน้องช้อยส์ AI</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Nutrients & Breakdown Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
+              <div className={`p-3.5 rounded-2xl border ${activeProduct.nutrition.sodiumMg > 1000 ? 'bg-rose-50/70 border-rose-300' : 'bg-slate-50/80 border-slate-200/60'}`}>
+                <span className="text-[11px] text-slate-500 font-medium">โซเดียม (Sodium)</span>
+                <div className={`text-base font-extrabold mt-0.5 ${activeProduct.nutrition.sodiumMg > 1000 ? 'text-rose-600' : 'text-slate-900'}`}>
+                  {activeProduct.nutrition.sodiumMg.toLocaleString()} <span className="text-xs font-normal">มก.</span>
+                </div>
+                <div className="text-[10px] text-slate-500 mt-0.5">
+                  {Math.round((activeProduct.nutrition.sodiumMg / profile.dailyBudget.sodiumMg) * 100)}% ของงบวัน
+                </div>
               </div>
 
-              {/* 4 Multi-Metric Health Indices */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5 pt-4 border-t border-slate-200/60">
-                <div className="bg-white/60 p-2.5 rounded-xl border border-slate-200/60">
-                  <div className="flex items-center gap-1 text-[11px] font-semibold text-slate-500">
-                    <HeartPulse className="h-3.5 w-3.5 text-rose-500" />
-                    <span>ภาระความดันโลหิต</span>
-                  </div>
-                  <div className={`text-xs font-extrabold mt-1 ${activeProduct.nutrition.sodiumMg > 1200 ? 'text-rose-600' : 'text-teal-700'}`}>
-                    {activeProduct.nutrition.sodiumMg > 1200 ? 'ความเสี่ยงสูง' : 'ระดับปลอดภัย'}
-                  </div>
-                  <div className="text-[10px] text-slate-400">
-                    {Math.round((activeProduct.nutrition.sodiumMg / profile.dailyBudget.sodiumMg) * 100)}% ของงบวัน
-                  </div>
+              <div className={`p-3.5 rounded-2xl border ${activeProduct.nutrition.sugarG > 10 ? 'bg-rose-50/70 border-rose-300' : 'bg-slate-50/80 border-slate-200/60'}`}>
+                <span className="text-[11px] text-slate-500 font-medium">น้ำตาล (Sugar)</span>
+                <div className={`text-base font-extrabold mt-0.5 ${activeProduct.nutrition.sugarG > 10 ? 'text-rose-600' : 'text-slate-900'}`}>
+                  {activeProduct.nutrition.sugarG} <span className="text-xs font-normal">กรัม</span>
                 </div>
-
-                <div className="bg-white/60 p-2.5 rounded-xl border border-slate-200/60">
-                  <div className="flex items-center gap-1 text-[11px] font-semibold text-slate-500">
-                    <Activity className="h-3.5 w-3.5 text-amber-500" />
-                    <span>ภาระการกรองของไต</span>
-                  </div>
-                  <div className="text-xs font-extrabold mt-1 text-slate-800">
-                    {activeProduct.nutrition.sodiumMg > 1500 ? 'เสี่ยงไตทำงานหนัก' : 'ปกติ'}
-                  </div>
-                  <div className="text-[10px] text-slate-400">Glomerular load</div>
+                <div className="text-[10px] text-slate-500 mt-0.5">
+                  {Math.round((activeProduct.nutrition.sugarG / profile.dailyBudget.sugarG) * 100)}% ของงบวัน
                 </div>
+              </div>
 
-                <div className="bg-white/60 p-2.5 rounded-xl border border-slate-200/60">
-                  <div className="flex items-center gap-1 text-[11px] font-semibold text-slate-500">
-                    <Scale className="h-3.5 w-3.5 text-cyan-600" />
-                    <span>ดัชนีน้ำตาลเพิ่ม</span>
-                  </div>
-                  <div className={`text-xs font-extrabold mt-1 ${activeProduct.nutrition.sugarG > 10 ? 'text-rose-600' : 'text-teal-700'}`}>
-                    {activeProduct.nutrition.sugarG > 10 ? 'น้ำตาลสูง' : 'น้ำตาลต่ำ'}
-                  </div>
-                  <div className="text-[10px] text-slate-400">
-                    {activeProduct.nutrition.sugarG} กรัม / มื้อ
-                  </div>
+              <div className={`p-3.5 rounded-2xl border ${activeProduct.nutrition.saturatedFatG > 6 ? 'bg-rose-50/70 border-rose-300' : 'bg-slate-50/80 border-slate-200/60'}`}>
+                <span className="text-[11px] text-slate-500 font-medium">ไขมันอิ่มตัว</span>
+                <div className={`text-base font-extrabold mt-0.5 ${activeProduct.nutrition.saturatedFatG > 6 ? 'text-rose-600' : 'text-slate-900'}`}>
+                  {activeProduct.nutrition.saturatedFatG} <span className="text-xs font-normal">กรัม</span>
                 </div>
+                <div className="text-[10px] text-slate-500 mt-0.5">
+                  {Math.round((activeProduct.nutrition.saturatedFatG / profile.dailyBudget.saturatedFatG) * 100)}% ของงบวัน
+                </div>
+              </div>
 
-                <div className="bg-white/60 p-2.5 rounded-xl border border-slate-200/60">
-                  <div className="flex items-center gap-1 text-[11px] font-semibold text-slate-500">
-                    <ShieldCheck className="h-3.5 w-3.5 text-teal-600" />
-                    <span>ตราทางเลือกสุขภาพ</span>
-                  </div>
-                  <div className={`text-xs font-extrabold mt-1 ${activeProduct.healthierChoiceCertified ? 'text-teal-700' : 'text-slate-500'}`}>
-                    {activeProduct.healthierChoiceCertified ? 'ผ่านเกณฑ์ อย.' : 'ยังไม่ได้รับรอง'}
-                  </div>
-                  <div className="text-[10px] text-slate-400">MOPH Standard</div>
+              <div className="p-3.5 rounded-2xl border bg-slate-50/80 border-slate-200/60">
+                <span className="text-[11px] text-slate-500 font-medium">พลังงาน (Energy)</span>
+                <div className="text-base font-extrabold mt-0.5 text-slate-900">
+                  {activeProduct.nutrition.calories} <span className="text-xs font-normal">kcal</span>
+                </div>
+                <div className="text-[10px] text-slate-500 mt-0.5">
+                  หน่วยบริโภค: {activeProduct.nutrition.servingSize}
                 </div>
               </div>
             </div>
 
-            {/* Nutrition Facts Table with Daily Percentage Bars */}
-            <div className="glass-card p-5">
-              <h4 className="font-extrabold text-sm md:text-base text-slate-900 mb-3 flex items-center justify-between">
-                <span>ข้อมูลโภชนาการ (Nutrition Facts)</span>
-                <span className="text-xs font-normal text-slate-500">
-                  หนึ่งหน่วยบริโภค: {activeProduct.nutrition.servingSize}
+            {/* Traceability Lot & Safety Notice */}
+            <div className="mt-5 pt-4 border-t border-slate-200/60 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2">
+                <span className="text-slate-500">รหัสตรวจสอบย้อนกลับ (TLC):</span>
+                <strong className="font-mono text-teal-900 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+                  {activeProduct.traceabilityLotCode}
+                </strong>
+                <span className="text-slate-400">| วันหมดอายุ: {activeProduct.expDate}</span>
+              </div>
+
+              {activeProduct.healthierChoiceCertified ? (
+                <span className="text-emerald-700 font-bold flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+                  ตราทางเลือกสุขภาพ อย. รับรอง
                 </span>
-              </h4>
+              ) : (
+                <span className="text-amber-700 text-[11px] flex items-center gap-1">
+                  <Info className="h-3.5 w-3.5 text-amber-600" />
+                  สูตรทั่วไปในท้องตลาด
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                <div className="bg-slate-50/80 p-3 rounded-xl border border-slate-200/60">
-                  <span className="text-[11px] text-slate-500 font-medium">พลังงาน</span>
-                  <div className="text-base font-extrabold text-slate-900 mt-0.5">
-                    {activeProduct.nutrition.calories} <span className="text-xs font-normal">kcal</span>
+      {/* MODE 2: ON-SHELF 5-SEC QUICK DECISION COMPARATOR */}
+      {activeMode === 'compare' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="glass-panel p-6 border-l-4 border-l-teal-600">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h4 className="font-extrabold text-base md:text-lg text-slate-900 flex items-center gap-2">
+                  <GitCompare className="h-5 w-5 text-teal-600" />
+                  <span>ตัวช่วยตัดสินใจหน้าชั้นวางสินค้าใน 5 วินาที (On-Shelf Decision Helper)</span>
+                </h4>
+                <p className="text-xs text-slate-600 mt-1 max-w-2xl leading-relaxed">
+                  แก้วิกฤต <em>&ldquo;คนไม่ได้ขาดเจตนา แต่ขาดตัวช่วยตอนตัดสินใจหน้าชั้นวาง&rdquo;</em> (Insight งานวิจัย สธ. 2025): เปรียบเทียบสินค้าตรงหน้าพร้อมระบบสัญญาณไฟจราจร <strong>GO • SLOW • STOP</strong>
+                </p>
+              </div>
+
+              <span className="text-xs font-bold text-teal-800 bg-teal-100/80 px-3 py-1 rounded-full whitespace-nowrap">
+                โปรไฟล์: {profile.name} ({profile.tag || 'คุมความดัน'})
+              </span>
+            </div>
+
+            {/* Shelf Item Selector Bar */}
+            <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center gap-2 overflow-x-auto pb-1">
+              <span className="text-xs font-bold text-slate-500 whitespace-nowrap">เลือกเทียบ:</span>
+              {products.slice(0, 6).map((prod) => {
+                const isChecked = compareProductIds.includes(prod.id);
+                return (
+                  <button
+                    key={prod.id}
+                    onClick={() => {
+                      if (isChecked) {
+                        if (compareProductIds.length > 1) {
+                          setCompareProductIds(compareProductIds.filter((id) => id !== prod.id));
+                        }
+                      } else {
+                        if (compareProductIds.length < 3) {
+                          setCompareProductIds([...compareProductIds, prod.id]);
+                        } else {
+                          setCompareProductIds([compareProductIds[1], compareProductIds[2], prod.id]);
+                        }
+                      }
+                    }}
+                    className={`flex-shrink-0 px-3 py-1.5 text-xs font-semibold rounded-xl border transition ${
+                      isChecked
+                        ? 'bg-teal-700 text-white border-teal-800 shadow-xs'
+                        : 'bg-white/70 hover:bg-white text-slate-700 border-slate-200'
+                    }`}
+                  >
+                    {prod.name.slice(0, 20)}...
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* On-Shelf Side-by-Side Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {compareProductIds.map((id) => {
+              const product = products.find((p) => p.id === id) || products[0];
+              const score = calculateChoiceScore(product, profile);
+              const sodiumRatio = product.nutrition.sodiumMg / profile.dailyBudget.sodiumMg;
+
+              // Traffic Light Recommendation: GO, SLOW, STOP
+              let decisionStatus: 'GO' | 'SLOW' | 'STOP' = 'GO';
+              let decisionColor = 'bg-emerald-600 text-white';
+              let decisionText = 'GO: สารอาหารปลอดภัย ไม่เกินงบวัน';
+
+              if (sodiumRatio > 0.7 || score.finalScore < 50) {
+                decisionStatus = 'STOP';
+                decisionColor = 'bg-rose-600 text-white animate-pulse';
+                decisionText = 'STOP: โซเดียมสูงเกิน 70% ของโควตาวัน แนะนำเลี่ยง';
+              } else if (sodiumRatio > 0.45 || score.finalScore < 70) {
+                decisionStatus = 'SLOW';
+                decisionColor = 'bg-amber-500 text-white';
+                decisionText = 'SLOW: ทานได้ แต่แนะนำเลี่ยงซดน้ำซุปให้หมด';
+              }
+
+              return (
+                <div
+                  key={product.id}
+                  className="glass-card p-5 rounded-2xl border flex flex-col justify-between hover:shadow-lg transition-all"
+                >
+                  <div>
+                    {/* Top Traffic Light Badge */}
+                    <div className="flex items-center justify-between mb-3">
+                      <span className={`text-xs font-black px-3 py-1 rounded-full shadow-xs ${decisionColor}`}>
+                        สัญญาณ: {decisionStatus}
+                      </span>
+                      <span className="text-xs font-extrabold text-slate-700">
+                        Score {score.finalScore} (เกรด {score.grade})
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-3 mb-4">
+                      <img
+                        src={product.imageUrl}
+                        alt={product.name}
+                        className="w-14 h-14 rounded-xl object-cover border border-slate-200"
+                      />
+                      <div>
+                        <h5 className="font-extrabold text-sm text-slate-900 leading-snug line-clamp-2">
+                          {product.name}
+                        </h5>
+                        <p className="text-[11px] text-slate-500">{product.brand}</p>
+                      </div>
+                    </div>
+
+                    {/* Decision Text Box */}
+                    <div className="p-2.5 rounded-xl bg-slate-50/90 border border-slate-200 text-xs mb-3 font-semibold text-slate-700">
+                      {decisionText}
+                    </div>
+
+                    {/* Nutrients Checklist */}
+                    <div className="space-y-1.5 text-xs text-slate-600 bg-white/70 p-3 rounded-xl border border-slate-100">
+                      <div className="flex justify-between">
+                        <span>โซเดียม:</span>
+                        <strong className={product.nutrition.sodiumMg > 1000 ? 'text-rose-600' : 'text-slate-800'}>
+                          {product.nutrition.sodiumMg.toLocaleString()} มก. ({Math.round(sodiumRatio * 100)}% งบวัน)
+                        </strong>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>เทียบเท่าเกลือแกง:</span>
+                        <strong className="text-slate-800">
+                          {(product.nutrition.sodiumMg / 2000).toFixed(1)} ช้อนชา
+                        </strong>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>น้ำตาล:</span>
+                        <strong className="text-slate-800">{product.nutrition.sugarG} กรัม</strong>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>ไขมันอิ่มตัว:</span>
+                        <strong className="text-slate-800">{product.nutrition.saturatedFatG} กรัม</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center justify-between">
+                    <span className="text-[10px] text-slate-400 font-mono">{product.traceabilityLotCode}</span>
+                    <button
+                      onClick={() => onAddToPantry(product)}
+                      className="glass-button text-xs py-1.5 px-3 font-bold bg-teal-600 hover:bg-teal-700 text-white flex items-center gap-1 shadow-xs"
+                    >
+                      <PackagePlus className="h-3.5 w-3.5" />
+                      <span>เลือกชิ้นนี้ (ลงคลัง)</span>
+                    </button>
                   </div>
                 </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
-                <div className={`p-3 rounded-xl border ${activeProduct.nutrition.sodiumMg > 1000 ? 'bg-rose-50/70 border-rose-300' : 'bg-slate-50/80 border-slate-200/60'}`}>
-                  <span className="text-[11px] text-slate-500 font-medium">โซเดียม (Sodium)</span>
-                  <div className={`text-base font-extrabold mt-0.5 ${activeProduct.nutrition.sodiumMg > 1000 ? 'text-rose-600' : 'text-slate-900'}`}>
-                    {activeProduct.nutrition.sodiumMg} <span className="text-xs font-normal">มก.</span>
-                  </div>
-                  <div className="text-[10px] text-slate-500 mt-0.5">
-                    {Math.round((activeProduct.nutrition.sodiumMg / profile.dailyBudget.sodiumMg) * 100)}% ของงบวัน
-                  </div>
+      {/* MODE 3: GS1 DIGITAL LINK 2D BARCODE SIMULATOR (ROADMAP 2028) */}
+      {activeMode === 'gs1' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="glass-panel p-6 border-2 border-teal-500/30">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-600 text-white shadow-sm">
+                  <QrCode className="h-6 w-6" />
                 </div>
-
-                <div className={`p-3 rounded-xl border ${activeProduct.nutrition.sugarG > 12 ? 'bg-rose-50/70 border-rose-300' : 'bg-slate-50/80 border-slate-200/60'}`}>
-                  <span className="text-[11px] text-slate-500 font-medium">น้ำตาล (Sugar)</span>
-                  <div className={`text-base font-extrabold mt-0.5 ${activeProduct.nutrition.sugarG > 12 ? 'text-rose-600' : 'text-slate-900'}`}>
-                    {activeProduct.nutrition.sugarG} <span className="text-xs font-normal">กรัม</span>
-                  </div>
-                  <div className="text-[10px] text-slate-500 mt-0.5">
-                    {Math.round((activeProduct.nutrition.sugarG / profile.dailyBudget.sugarG) * 100)}% ของงบวัน
-                  </div>
-                </div>
-
-                <div className={`p-3 rounded-xl border ${activeProduct.nutrition.saturatedFatG > 6 ? 'bg-rose-50/70 border-rose-300' : 'bg-slate-50/80 border-slate-200/60'}`}>
-                  <span className="text-[11px] text-slate-500 font-medium">ไขมันอิ่มตัว</span>
-                  <div className={`text-base font-extrabold mt-0.5 ${activeProduct.nutrition.saturatedFatG > 6 ? 'text-rose-600' : 'text-slate-900'}`}>
-                    {activeProduct.nutrition.saturatedFatG} <span className="text-xs font-normal">กรัม</span>
-                  </div>
-                  <div className="text-[10px] text-slate-500 mt-0.5">
-                    {Math.round((activeProduct.nutrition.saturatedFatG / profile.dailyBudget.saturatedFatG) * 100)}% ของงบวัน
-                  </div>
+                <div>
+                  <h4 className="font-extrabold text-base md:text-lg text-slate-900">
+                    เครื่องมือจำลองบาร์โค้ด 2 มิติมาตรฐานโลก (GS1 Digital Link 2D Barcode)
+                  </h4>
+                  <p className="text-xs text-slate-500">
+                    เทคโนโลยีที่ทั่วโลกกำลังเปลี่ยนผ่านแทนบาร์โค้ดแท่งเดิมภายในปี 2027-2028 (บันทึกรหัสล็อต TLC และวันหมดอายุอัตโนมัติ)
+                  </p>
                 </div>
               </div>
 
-              {/* Additives & Allergen Guard Box */}
-              <div className="mt-4 pt-3 border-t border-slate-200/60 flex flex-wrap items-center justify-between gap-2 text-xs">
-                <div className="text-slate-600">
-                  <span className="font-semibold text-slate-800">ส่วนประกอบสำคัญ:</span>{' '}
-                  {activeProduct.ingredients?.join(', ') || 'ไม่มีข้อมูล'}
+              <select
+                value={gs1SelectedId}
+                onChange={(e) => setGs1SelectedId(e.target.value)}
+                className="glass-input text-xs font-semibold max-w-xs"
+              >
+                {products.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name.slice(0, 32)}...
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center mt-5">
+              {/* QR Visualizer with Animated Laser Scan Line */}
+              <div className="md:col-span-4 bg-white p-6 rounded-2xl border border-slate-200 text-center shadow-sm relative overflow-hidden flex flex-col items-center">
+                <div className="relative w-40 h-40 bg-slate-900 rounded-xl p-2 flex items-center justify-center shadow-md">
+                  {/* Stylized QR Code Placeholder */}
+                  <div className="w-full h-full border-2 border-dashed border-teal-400 rounded-lg flex flex-col items-center justify-center p-2 text-white">
+                    <QrCode className="h-20 w-20 text-teal-300" />
+                    <span className="text-[10px] font-mono text-teal-200 mt-1">GS1 2D DIGITAL LINK</span>
+                  </div>
+                  {/* Animated Laser Scanning Beam */}
+                  <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-teal-400 to-transparent animate-laserSweep shadow-teal-400 shadow-md pointer-events-none" />
+                </div>
+                <span className="text-[11px] font-mono font-bold text-slate-600 mt-3">
+                  GTIN: {gs1Product.barcode}
+                </span>
+              </div>
+
+              {/* Parsed Application Identifiers (AI) Breakdown */}
+              <div className="md:col-span-8 space-y-3">
+                <div className="bg-slate-50/90 p-3.5 rounded-xl border border-slate-200 text-xs font-mono break-all text-slate-700">
+                  <span className="text-slate-400 block text-[10px] font-sans font-bold uppercase mb-1">
+                    GS1 Standard Digital Link Web URI:
+                  </span>
+                  <span className="text-teal-800 font-bold">{gs1Uri}</span>
                 </div>
 
-                {activeProduct.allergens && activeProduct.allergens.length > 0 && (
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-amber-800 font-bold flex items-center gap-1">
-                      <AlertTriangle className="h-3.5 w-3.5 text-amber-600" />
-                      สารก่อภูมิแพ้:
-                    </span>
-                    <div className="flex gap-1">
-                      {activeProduct.allergens.map((alg, i) => (
-                        <span key={i} className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 text-[10px] font-semibold">
-                          {alg}
-                        </span>
-                      ))}
-                    </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  <div className="bg-white/90 p-3 rounded-xl border border-slate-200 text-xs">
+                    <span className="text-[10px] font-bold text-teal-700 block">(01) GTIN รหัสสากล</span>
+                    <span className="font-mono font-black text-slate-900 text-xs">{gs1Product.barcode}</span>
                   </div>
-                )}
+
+                  <div className="bg-white/90 p-3 rounded-xl border border-slate-200 text-xs">
+                    <span className="text-[10px] font-bold text-teal-700 block">(10) Batch / Lot (TLC)</span>
+                    <span className="font-mono font-black text-teal-900 text-xs">{gs1Product.traceabilityLotCode}</span>
+                  </div>
+
+                  <div className="bg-white/90 p-3 rounded-xl border border-slate-200 text-xs">
+                    <span className="text-[10px] font-bold text-teal-700 block">(17) Expiry Date</span>
+                    <span className="font-mono font-black text-slate-900 text-xs">{gs1Product.expDate}</span>
+                  </div>
+
+                  <div className="bg-white/90 p-3 rounded-xl border border-slate-200 text-xs">
+                    <span className="text-[10px] font-bold text-teal-700 block">(21) Serial Number</span>
+                    <span className="font-mono font-black text-slate-900 text-xs">SN98412</span>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <span className="text-xs text-slate-500">
+                    เมื่อสแกนด้วย ChoiceGuard ระบบจะแยกแยะข้อมูลทั้งหมดและบันทึกล็อตให้ทันที 0 manual input
+                  </span>
+
+                  <button
+                    onClick={handleSimulateGS1Ingest}
+                    className="glass-button glass-button-primary text-xs py-2.5 px-4 font-bold whitespace-nowrap bg-teal-700 hover:bg-teal-800 text-white flex items-center gap-1.5 shadow-sm"
+                  >
+                    {gs1IngestSuccess ? (
+                      <>
+                        <Check className="h-4 w-4" />
+                        <span>นำเข้าระบบ &amp; บันทึกลงคลังสำเร็จ!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="h-4 w-4" />
+                        <span>ทดลองนำเข้าระบบทันที (Simulate Ingest)</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Modal: Custom Food Testing Simulator */}
+      {/* Custom Food Calculation Modal */}
       {showCustomModal && (
         <div className="glass-overlay">
-          <div className="glass-modal-panel p-6 max-w-md animate-scaleUp">
-            <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-200">
-              <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
-                <PlusCircle className="h-5 w-5 text-teal-600" />
-                ทดสอบคำนวณโภชนาการอาหารกำหนดเอง
-              </h3>
-              <button
-                onClick={() => setShowCustomModal(false)}
-                className="p-1 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700"
-              >
-                ✕
-              </button>
-            </div>
+          <div className="glass-modal-panel p-6 max-w-lg">
+            <h4 className="font-extrabold text-lg text-slate-900 mb-1 flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-teal-600" />
+              <span>คำนวณ Choice Score อาหารจานโปรด / สตรีทฟู้ด</span>
+            </h4>
+            <p className="text-xs text-slate-500 mb-4">
+              ทดสอบกรอกสารอาหารของเมนูตามสั่งเพื่อดูว่าเหมาะกับภาวะสุขภาพและโควตาวันนี้ของคุณหรือไม่
+            </p>
 
-            <form onSubmit={handleApplyCustomFood} className="space-y-3.5 text-xs">
+            <form onSubmit={handleApplyCustomFood} className="space-y-3 text-xs">
               <div>
-                <label className="font-semibold text-slate-700 block mb-1">ชื่ออาหาร / เมนู:</label>
+                <label className="font-bold text-slate-700 block mb-1">ชื่อเมนูอาหาร:</label>
                 <input
                   type="text"
                   value={customName}
                   onChange={(e) => setCustomName(e.target.value)}
-                  className="glass-input text-xs py-1.5 px-3"
+                  className="glass-input text-xs"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-semibold text-slate-700 block mb-1">โซเดียม (มก.):</label>
+                  <label className="font-bold text-slate-700 block mb-1">โซเดียม (มก.):</label>
                   <input
                     type="number"
                     value={customSodium}
                     onChange={(e) => setCustomSodium(Number(e.target.value))}
-                    className="glass-input text-xs py-1.5 px-3"
+                    className="glass-input text-xs"
                     required
                   />
-                  <span className="text-[10px] text-slate-400">เกณฑ์ WHO ≤ 2,000 มก./วัน</span>
+                  <span className="text-[10px] text-slate-400">เกณฑ์ WHO: ไม่เกิน 2,000 มก./วัน</span>
                 </div>
 
                 <div>
-                  <label className="font-semibold text-slate-700 block mb-1">น้ำตาล (กรัม):</label>
+                  <label className="font-bold text-slate-700 block mb-1">น้ำตาล (กรัม):</label>
                   <input
                     type="number"
                     value={customSugar}
                     onChange={(e) => setCustomSugar(Number(e.target.value))}
-                    className="glass-input text-xs py-1.5 px-3"
+                    className="glass-input text-xs"
                     required
                   />
-                  <span className="text-[10px] text-slate-400">เกณฑ์ อย. ≤ 24 กรัม/วัน</span>
+                  <span className="text-[10px] text-slate-400">เกณฑ์ WHO: ไม่เกิน 24 กรัม/วัน</span>
                 </div>
+              </div>
 
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-semibold text-slate-700 block mb-1">ไขมันอิ่มตัว (กรัม):</label>
+                  <label className="font-bold text-slate-700 block mb-1">ไขมันอิ่มตัว (กรัม):</label>
                   <input
                     type="number"
                     value={customSatFat}
                     onChange={(e) => setCustomSatFat(Number(e.target.value))}
-                    className="glass-input text-xs py-1.5 px-3"
+                    className="glass-input text-xs"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="font-semibold text-slate-700 block mb-1">พลังงาน (kcal):</label>
+                  <label className="font-bold text-slate-700 block mb-1">พลังงาน (kcal):</label>
                   <input
                     type="number"
                     value={customCalories}
                     onChange={(e) => setCustomCalories(Number(e.target.value))}
-                    className="glass-input text-xs py-1.5 px-3"
+                    className="glass-input text-xs"
                     required
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-200">
+              <div className="pt-4 border-t border-slate-200 flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setShowCustomModal(false)}
-                  className="glass-button text-xs py-1.5 px-3 bg-white text-slate-700"
+                  className="glass-button py-2 px-3 text-xs"
                 >
                   ยกเลิก
                 </button>
                 <button
                   type="submit"
-                  className="glass-button glass-button-primary text-xs py-1.5 px-4"
+                  className="glass-button glass-button-primary py-2 px-4 text-xs font-bold"
                 >
-                  คำนวณ Choice Score ทันที
+                  คำนวณคะแนนทันที
                 </button>
               </div>
             </form>

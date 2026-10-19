@@ -414,7 +414,7 @@
       "label": "POST()",
       "file_type": "code",
       "source_file": "src/app/api/groq/route.ts",
-      "source_location": "L23",
+      "source_location": "L25",
       "_callable": true,
       "_origin": "ast",
       "id": "src_app_api_groq_route_post",
@@ -1719,7 +1719,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/app/api/groq/route.ts",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_app_api_groq_route",
@@ -3354,5 +3354,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "53df8910f7f8bf298ce0dbd1444fa002d3c10321"
+  "built_at_commit": "803f463091c2cf5f3854f7194eb8a62aafb89531"
 }
