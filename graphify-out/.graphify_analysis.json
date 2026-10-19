@@ -1,0 +1,262 @@
+{
+  "communities": {
+    "0": [
+      "src_components_healthprofilemodal",
+      "src_components_healthprofilemodal_healthprofilemodal",
+      "src_components_healthprofilemodal_healthprofilemodalprops",
+      "src_components_nongchoicechatdrawer",
+      "src_components_nongchoicechatdrawer_nongchoicechatdrawer",
+      "src_components_nongchoicechatdrawer_nongchoicechatdrawerprops",
+      "src_components_scannersection",
+      "src_components_scannersection_scannersection",
+      "src_components_scannersection_scannersectionprops",
+      "src_components_smartswapsection",
+      "src_components_smartswapsection_smartswapsection",
+      "src_components_smartswapsection_smartswapsectionprops",
+      "src_lib_scorecalculator",
+      "src_lib_scorecalculator_calculatechoicescore",
+      "src_lib_scorecalculator_scorebreakdown",
+      "src_types_index",
+      "src_types_index_chatmessage",
+      "src_types_index_foodproduct",
+      "src_types_index_healthcondition",
+      "src_types_index_nutritionfacts",
+      "src_types_index_userhealthprofile"
+    ],
+    "1": [
+      "package",
+      "package_devdependencies",
+      "package_devdependencies_types_node",
+      "package_devdependencies_types_react",
+      "package_devdependencies_types_react_dom",
+      "package_devdependencies_typescript",
+      "package_name",
+      "package_private",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_dev",
+      "package_scripts_start",
+      "package_version",
+      "types_node",
+      "types_react",
+      "types_react_dom",
+      "typescript"
+    ],
+    "2": [
+      "src_app_page",
+      "src_app_page_homepage",
+      "src_components_dailybudgetring",
+      "src_components_dailybudgetring_dailybudgetprops",
+      "src_components_dailybudgetring_dailybudgetring",
+      "src_components_navbar",
+      "src_components_navbar_navbar",
+      "src_components_navbar_navbarprops",
+      "src_components_producerdashboard",
+      "src_components_producerdashboard_producerdashboard",
+      "src_components_settingsmodal",
+      "src_components_settingsmodal_settingsmodal",
+      "src_components_settingsmodal_settingsmodalprops",
+      "src_data_products",
+      "src_data_products_food_products",
+      "src_data_recalls",
+      "src_data_recalls_recall_notices"
+    ],
+    "3": [
+      "tsconfig_compileroptions",
+      "tsconfig_compileroptions_allowjs",
+      "tsconfig_compileroptions_esmoduleinterop",
+      "tsconfig_compileroptions_incremental",
+      "tsconfig_compileroptions_isolatedmodules",
+      "tsconfig_compileroptions_jsx",
+      "tsconfig_compileroptions_module",
+      "tsconfig_compileroptions_moduleresolution",
+      "tsconfig_compileroptions_noemit",
+      "tsconfig_compileroptions_paths",
+      "tsconfig_compileroptions_plugins",
+      "tsconfig_compileroptions_resolvejsonmodule",
+      "tsconfig_compileroptions_skiplibcheck",
+      "tsconfig_compileroptions_strict",
+      "tsconfig_compileroptions_target"
+    ],
+    "4": [
+      "lucide_react",
+      "next",
+      "package_dependencies",
+      "package_dependencies_lucide_react",
+      "package_dependencies_next",
+      "package_dependencies_react",
+      "package_dependencies_react_dom",
+      "react",
+      "react_dom"
+    ],
+    "5": [
+      "src_components_pantrylottracker",
+      "src_components_pantrylottracker_pantrylottracker",
+      "src_components_pantrylottracker_pantrylottrackerprops",
+      "src_components_recallsimulatormodal",
+      "src_components_recallsimulatormodal_recallsimulatormodal",
+      "src_components_recallsimulatormodal_recallsimulatormodalprops",
+      "src_types_index_pantryitem",
+      "src_types_index_recallnotice"
+    ],
+    "6": [
+      "ref_next_env_d_ts",
+      "ref_next_types_ts",
+      "ref_ts",
+      "ref_tsx",
+      "tsconfig_include"
+    ],
+    "7": [
+      "ref_dom",
+      "ref_dom_iterable",
+      "ref_esnext",
+      "tsconfig_compileroptions_lib"
+    ],
+    "8": [
+      "src_app_layout",
+      "src_app_layout_metadata",
+      "src_app_layout_rootlayout",
+      "src_app_layout_viewport"
+    ],
+    "9": [
+      "ref_node_modules",
+      "tsconfig",
+      "tsconfig_exclude"
+    ],
+    "10": [
+      "next_config",
+      "next_config_nextconfig"
+    ],
+    "11": [
+      "src_app_api_groq_route",
+      "src_app_api_groq_route_post"
+    ]
+  },
+  "cohesion": {
+    "0": 0.20476190476190476,
+    "1": 0.11764705882352941,
+    "2": 0.16176470588235295,
+    "3": 0.13333333333333333,
+    "4": 0.2222222222222222,
+    "5": 0.42857142857142855,
+    "6": 0.4,
+    "7": 0.5,
+    "8": 0.5,
+    "9": 0.6666666666666666,
+    "10": 1.0,
+    "11": 1.0
+  },
+  "gods": [
+    {
+      "id": "tsconfig_compileroptions",
+      "label": "compilerOptions",
+      "degree": 16
+    },
+    {
+      "id": "src_types_index_userhealthprofile",
+      "label": "UserHealthProfile",
+      "degree": 13
+    },
+    {
+      "id": "src_types_index_foodproduct",
+      "label": "FoodProduct",
+      "degree": 10
+    },
+    {
+      "id": "src_types_index_recallnotice",
+      "label": "RecallNotice",
+      "degree": 7
+    },
+    {
+      "id": "src_types_index_pantryitem",
+      "label": "PantryItem",
+      "degree": 6
+    },
+    {
+      "id": "src_lib_scorecalculator_calculatechoicescore",
+      "label": "calculateChoiceScore()",
+      "degree": 5
+    },
+    {
+      "id": "tsconfig_include",
+      "label": "include",
+      "degree": 5
+    },
+    {
+      "id": "package_scripts",
+      "label": "scripts",
+      "degree": 4
+    },
+    {
+      "id": "tsconfig_compileroptions_lib",
+      "label": "lib",
+      "degree": 4
+    },
+    {
+      "id": "src_components_pantrylottracker_pantrylottrackerprops",
+      "label": "PantryLotTrackerProps",
+      "degree": 3
+    }
+  ],
+  "surprises": [
+    {
+      "source": "DailyBudgetProps",
+      "target": "UserHealthProfile",
+      "source_files": [
+        "src/components/DailyBudgetRing.tsx",
+        "src/types/index.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities; peripheral node `DailyBudgetProps` unexpectedly reaches hub `UserHealthProfile`"
+    },
+    {
+      "source": "NavbarProps",
+      "target": "UserHealthProfile",
+      "source_files": [
+        "src/components/Navbar.tsx",
+        "src/types/index.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities; peripheral node `NavbarProps` unexpectedly reaches hub `UserHealthProfile`"
+    },
+    {
+      "source": "HealthProfileModalProps",
+      "target": "UserHealthProfile",
+      "source_files": [
+        "src/components/HealthProfileModal.tsx",
+        "src/types/index.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "peripheral node `HealthProfileModalProps` unexpectedly reaches hub `UserHealthProfile`"
+    },
+    {
+      "source": "NongChoiceChatDrawerProps",
+      "target": "FoodProduct",
+      "source_files": [
+        "src/components/NongChoiceChatDrawer.tsx",
+        "src/types/index.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "peripheral node `NongChoiceChatDrawerProps` unexpectedly reaches hub `FoodProduct`"
+    },
+    {
+      "source": "PantryLotTrackerProps",
+      "target": "PantryItem",
+      "source_files": [
+        "src/components/PantryLotTracker.tsx",
+        "src/types/index.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "cross-file semantic connection"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}

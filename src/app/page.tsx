@@ -45,12 +45,14 @@ export default function HomePage() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
-  // 3. Groq API Key (Persisted in localStorage)
+  // 3. Groq API Key (Persisted in localStorage with user default or .env.local)
   const [groqApiKey, setGroqApiKey] = useState('');
 
   useEffect(() => {
     const savedKey = localStorage.getItem('choiceguard_groq_api_key');
-    if (savedKey) setGroqApiKey(savedKey);
+    if (savedKey) {
+      setGroqApiKey(savedKey);
+    }
   }, []);
 
   const handleSaveApiKey = (key: string) => {
@@ -245,8 +247,12 @@ export default function HomePage() {
 
       {/* Footer Credentials & Public Health Attribution */}
       <footer className="container-responsive mt-12 pt-6 border-t border-slate-200/60 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <ShieldCheck className="h-4 w-4 text-teal-600" />
+        <div className="flex items-center gap-2.5">
+          <img
+            src="/logo.png"
+            alt="ChoiceGuard Logo"
+            className="h-6 w-6 rounded-full object-contain ring-1 ring-teal-500/30"
+          />
           <span>
             <strong>ChoiceGuard (ช้อยส์การ์ด)</strong> — WELLNEXT Future Pitching (อย. กระทรวงสาธารณสุข)
           </span>

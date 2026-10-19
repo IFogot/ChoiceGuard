@@ -1,0 +1,112 @@
+{
+  "next.config.js": {
+    "mtime": 1792427361.4230516,
+    "ast_hash": "368f129b1abbe2d82b25351cde2785d9",
+    "semantic_hash": "368f129b1abbe2d82b25351cde2785d9"
+  },
+  "package.json": {
+    "mtime": 1792427345.2271354,
+    "ast_hash": "d8e5793343a5857467abc5de8eccc7b1",
+    "semantic_hash": "d8e5793343a5857467abc5de8eccc7b1"
+  },
+  "src/app/api/groq/route.ts": {
+    "mtime": 1792428296.950278,
+    "ast_hash": "767903fbd67602dcbdd0f17a9569fd62",
+    "semantic_hash": ""
+  },
+  "src/app/layout.tsx": {
+    "mtime": 1792428554.0558896,
+    "ast_hash": "76779580be2116bb42e73176189d4e02",
+    "semantic_hash": ""
+  },
+  "src/app/page.tsx": {
+    "mtime": 1792428540.2305534,
+    "ast_hash": "f03d4aded6751564b3d72b9ad3a7d497",
+    "semantic_hash": ""
+  },
+  "src/components/DailyBudgetRing.tsx": {
+    "mtime": 1792427611.8898008,
+    "ast_hash": "e0e2c687b8488d11280b12b30b264ae7",
+    "semantic_hash": "e0e2c687b8488d11280b12b30b264ae7"
+  },
+  "src/components/HealthProfileModal.tsx": {
+    "mtime": 1792427832.5781817,
+    "ast_hash": "1809b68bc55ebddfdd9251dbd047cb02",
+    "semantic_hash": "1809b68bc55ebddfdd9251dbd047cb02"
+  },
+  "src/components/Navbar.tsx": {
+    "mtime": 1792428488.0765176,
+    "ast_hash": "2c3a74ca0908bd707edba9c45d488096",
+    "semantic_hash": ""
+  },
+  "src/components/NongChoiceChatDrawer.tsx": {
+    "mtime": 1792429012.6352715,
+    "ast_hash": "7c3239a1b73e020f0f7cb7b7d8735a16",
+    "semantic_hash": ""
+  },
+  "src/components/PantryLotTracker.tsx": {
+    "mtime": 1792427716.284441,
+    "ast_hash": "9e081379d76e0b61d857365cf9bef503",
+    "semantic_hash": "9e081379d76e0b61d857365cf9bef503"
+  },
+  "src/components/ProducerDashboard.tsx": {
+    "mtime": 1792427781.5765114,
+    "ast_hash": "9f9b500ae8c820298e88cf118fd0b169",
+    "semantic_hash": "9f9b500ae8c820298e88cf118fd0b169"
+  },
+  "src/components/RecallSimulatorModal.tsx": {
+    "mtime": 1792427736.523568,
+    "ast_hash": "faca234fbb6253ea19cd4b1647c8ec1b",
+    "semantic_hash": "faca234fbb6253ea19cd4b1647c8ec1b"
+  },
+  "src/components/ScannerSection.tsx": {
+    "mtime": 1792427651.6502986,
+    "ast_hash": "11b2fc9feef9bb36bd206deb1dddb248",
+    "semantic_hash": "11b2fc9feef9bb36bd206deb1dddb248"
+  },
+  "src/components/SettingsModal.tsx": {
+    "mtime": 1792427848.4223027,
+    "ast_hash": "0f4e7e2cd623963017d5bf692a56a4fb",
+    "semantic_hash": "0f4e7e2cd623963017d5bf692a56a4fb"
+  },
+  "src/components/SmartSwapSection.tsx": {
+    "mtime": 1792427687.1032777,
+    "ast_hash": "92eb12d68b9afb56e3c9eba951e19766",
+    "semantic_hash": "92eb12d68b9afb56e3c9eba951e19766"
+  },
+  "src/data/products.ts": {
+    "mtime": 1792427453.9305444,
+    "ast_hash": "a4ecd9ebe7bdf0dd05893efb2ab52d51",
+    "semantic_hash": "a4ecd9ebe7bdf0dd05893efb2ab52d51"
+  },
+  "src/data/recalls.ts": {
+    "mtime": 1792427464.8890579,
+    "ast_hash": "44f118a61f7c9c56f1d11d2105b0ac5d",
+    "semantic_hash": "44f118a61f7c9c56f1d11d2105b0ac5d"
+  },
+  "src/lib/scoreCalculator.ts": {
+    "mtime": 1792427487.845371,
+    "ast_hash": "86f0daf5b18352c1a20b66d95e8ea2f9",
+    "semantic_hash": "86f0daf5b18352c1a20b66d95e8ea2f9"
+  },
+  "src/types/index.ts": {
+    "mtime": 1792427404.341081,
+    "ast_hash": "b81ad50db4d7ff0686d226c1962d819e",
+    "semantic_hash": "b81ad50db4d7ff0686d226c1962d819e"
+  },
+  "tsconfig.json": {
+    "mtime": 1792427355.8068092,
+    "ast_hash": "1dc8a9656a455d9d5dc876cb215d054a",
+    "semantic_hash": "1dc8a9656a455d9d5dc876cb215d054a"
+  },
+  "public/logo.png": {
+    "mtime": 1792428314.5341997,
+    "ast_hash": "756a7a52022ad6793406f54c01698550",
+    "semantic_hash": ""
+  },
+  "src/app/icon.png": {
+    "mtime": 1792428314.5341997,
+    "ast_hash": "756a7a52022ad6793406f54c01698550",
+    "semantic_hash": ""
+  }
+}

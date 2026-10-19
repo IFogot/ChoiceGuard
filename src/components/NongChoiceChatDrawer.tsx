@@ -119,13 +119,23 @@ export const NongChoiceChatDrawer: React.FC<NongChoiceChatDrawerProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[440px] shadow-2xl flex flex-col glass-modal-panel border-l-2 border-teal-500/30 animate-slideLeft">
+    <div className="fixed inset-0 z-50 flex justify-end">
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-slate-900/35 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+      />
+
+      {/* Slide-in Drawer Panel */}
+      <div className="relative z-10 w-full sm:w-[440px] h-full shadow-2xl flex flex-col glass-modal-panel border-l-2 border-teal-500/30 rounded-none sm:rounded-l-3xl animate-slideLeft">
       {/* Drawer Header */}
       <div className="p-4 border-b border-slate-200/80 flex items-center justify-between bg-teal-50/40">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-teal-600 to-cyan-500 text-white shadow-md shadow-teal-500/20">
-            <Sparkles className="h-5 w-5" />
-          </div>
+          <img
+            src="/logo.png"
+            alt="Nong Choice"
+            className="h-10 w-10 rounded-full object-contain shadow-md shadow-teal-500/25 ring-2 ring-teal-500/30 flex-shrink-0"
+          />
           <div>
             <div className="flex items-center gap-1.5">
               <h3 className="font-extrabold text-sm text-slate-900">น้องช้อยส์ (Nong Choice AI)</h3>
@@ -166,14 +176,18 @@ export const NongChoiceChatDrawer: React.FC<NongChoiceChatDrawerProps> = ({
               key={m.id}
               className={`flex items-start gap-2.5 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
             >
-              <div
-                className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold flex-shrink-0 ${
-                  isUser
-                    ? 'bg-slate-700 text-white'
-                    : 'bg-teal-600 text-white shadow-sm'
-                }`}
-              >
-                {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+              <div className="flex-shrink-0">
+                {isUser ? (
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold bg-slate-700 text-white">
+                    <User className="h-4 w-4" />
+                  </div>
+                ) : (
+                  <img
+                    src="/logo.png"
+                    alt="Nong Choice"
+                    className="h-7 w-7 rounded-full object-contain ring-1 ring-teal-500/30 shadow-sm"
+                  />
+                )}
               </div>
 
               <div
@@ -274,6 +288,7 @@ export const NongChoiceChatDrawer: React.FC<NongChoiceChatDrawerProps> = ({
           น้องช้อยส์เป็น AI เพื่อการศึกษาและปรับพฤติกรรมโภชนาการ ไม่วินิจฉัยโรคหรือสั่งยา หากมีอาการเจ็บป่วยควรพบแพทย์
         </p>
       </div>
+    </div>
     </div>
   );
 };

@@ -48,9 +48,10 @@ export async function POST(req: NextRequest) {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`,
+        'User-Agent': 'ChoiceGuard-HealthPlatform/1.0',
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model: process.env.NEXT_PUBLIC_GROQ_MODEL || 'openai/gpt-oss-120b',
         messages: formattedMessages,
         temperature: 0.6,
         max_tokens: 1024,

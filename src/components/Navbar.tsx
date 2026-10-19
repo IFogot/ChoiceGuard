@@ -46,9 +46,11 @@ export const Navbar: React.FC<NavbarProps> = ({
       >
         {/* Brand & Pitching Tag */}
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-teal-600 to-cyan-500 text-white shadow-md shadow-teal-500/20">
-            <ShieldCheck className="h-6 w-6" />
-          </div>
+          <img
+            src="/logo.png"
+            alt="ChoiceGuard Logo"
+            className="h-10 w-10 md:h-12 md:w-12 rounded-full object-contain shadow-md shadow-teal-500/25 ring-2 ring-teal-500/30 flex-shrink-0"
+          />
           <div>
             <div className="flex items-center gap-2">
               <span className="font-extrabold text-lg md:text-xl tracking-tight bg-gradient-to-r from-teal-700 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
