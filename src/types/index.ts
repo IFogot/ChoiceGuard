@@ -45,7 +45,7 @@ export interface FoodProduct {
   name: string;
   nameEn: string;
   brand: string;
-  category: 'instant_noodles' | 'condiments' | 'beverages' | 'ready_meals' | 'snacks' | 'dairy';
+  category: 'instant_noodles' | 'condiments' | 'beverages' | 'ready_meals' | 'snacks' | 'dairy' | 'prepared_food';
   categoryLabel: string;
   imageUrl: string;
   nutrition: NutritionFacts;
@@ -61,6 +61,33 @@ export interface FoodProduct {
   allergens: string[];
   smartSwapId?: string; // ID ของสินค้าทางเลือกที่ดีกว่า
   warningTags: string[];
+  cteHistory?: CTEEvent[];
+}
+
+export type FSMA204_CTE = 
+  | 'harvesting'
+  | 'cooling'
+  | 'initial_packing'
+  | 'first_land_based_receiving'
+  | 'shipping'
+  | 'receiving'
+  | 'transformation';
+
+export interface CTEEvent {
+  stepNumber: number;
+  cteType: FSMA204_CTE;
+  cteTitleTh: string;
+  locationName: string;
+  glnLocationId: string;
+  timestamp: string;
+  kdeData: {
+    tlc: string;
+    referenceDocType: string;
+    quantity: string;
+    temperatureLog?: string;
+    qualitySignOff: string;
+  };
+  verificationStatus: 'verified' | 'tamper_evident' | 'alert_flagged';
 }
 
 export interface PantryItem {
@@ -89,6 +116,7 @@ export interface RecallNotice {
   actionRequired: string;
   resolutionRatePercent: number; // e.g. 84%
   affectedConsumersCount: number;
+  electronicSpreadsheetAvailable?: boolean;
 }
 
 export interface ChatMessage {
@@ -98,3 +126,4 @@ export interface ChatMessage {
   timestamp: string;
   productContext?: Partial<FoodProduct>;
 }
+

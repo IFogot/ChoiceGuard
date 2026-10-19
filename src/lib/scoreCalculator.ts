@@ -5,6 +5,8 @@ export interface ScoreBreakdown {
   grade: 'A' | 'B' | 'C' | 'D' | 'F';
   color: string;
   summaryThai: string;
+  label?: string;
+  description?: string;
   penalties: {
     nutrient: string;
     points: number;
@@ -215,6 +217,8 @@ export function calculateChoiceScore(
     grade,
     color,
     summaryThai,
+    label: `เกรด ${grade} (${finalScore}/100) — ${grade === 'A' ? 'ดีเยี่ยม' : grade === 'B' ? 'ดี' : grade === 'C' ? 'พอใช้' : grade === 'D' ? 'ควรระวัง' : 'ไม่แนะนำ'}`,
+    description: summaryThai,
     penalties,
     bonuses,
     budgetImpact: {

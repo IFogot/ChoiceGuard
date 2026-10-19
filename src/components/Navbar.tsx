@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ShieldCheck, Sparkles, Settings, Activity, RefreshCw, AlertTriangle, Layers } from 'lucide-react';
+import { ShieldCheck, Sparkles, Activity, RefreshCw, AlertTriangle, Layers } from 'lucide-react';
 import { UserHealthProfile } from '../types';
 
 interface NavbarProps {
@@ -9,7 +9,6 @@ interface NavbarProps {
   setActiveTab: (tab: 'scan' | 'swap' | 'pantry' | 'dashboard') => void;
   profile: UserHealthProfile;
   onOpenProfileModal: () => void;
-  onOpenSettingsModal: () => void;
   onToggleChat: () => void;
   isChatOpen: boolean;
   activeRecallCount: number;
@@ -20,7 +19,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   profile,
   onOpenProfileModal,
-  onOpenSettingsModal,
   onToggleChat,
   isChatOpen,
   activeRecallCount,
@@ -131,15 +129,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             />
             <span className="hidden lg:inline text-slate-700">{profile.name}:</span>
             <span className="text-teal-900 font-bold">{currentCondition.badge}</span>
-          </button>
-
-          {/* Settings (Groq API Key) */}
-          <button
-            onClick={onOpenSettingsModal}
-            className="glass-button p-2 text-slate-600 hover:text-slate-900"
-            title="ตั้งค่าระบบ & Groq API Key"
-          >
-            <Settings className="h-4 w-4" />
           </button>
 
           {/* Nong Choice AI Trigger */}

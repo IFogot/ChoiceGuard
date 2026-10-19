@@ -12,7 +12,6 @@ import { PantryLotTracker } from '../components/PantryLotTracker';
 import { ProducerDashboard } from '../components/ProducerDashboard';
 import { NongChoiceChatDrawer } from '../components/NongChoiceChatDrawer';
 import { HealthProfileModal } from '../components/HealthProfileModal';
-import { SettingsModal } from '../components/SettingsModal';
 import { RecallSimulatorModal } from '../components/RecallSimulatorModal';
 import { ShieldCheck, Heart, Sparkles, Building, Award, Bell } from 'lucide-react';
 
@@ -43,24 +42,8 @@ export default function HomePage() {
 
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
-  // 3. Groq API Key (Persisted in localStorage with user default or .env.local)
-  const [groqApiKey, setGroqApiKey] = useState('');
-
-  useEffect(() => {
-    const savedKey = localStorage.getItem('choiceguard_groq_api_key');
-    if (savedKey) {
-      setGroqApiKey(savedKey);
-    }
-  }, []);
-
-  const handleSaveApiKey = (key: string) => {
-    setGroqApiKey(key);
-    localStorage.setItem('choiceguard_groq_api_key', key);
-  };
-
-  // 4. Pantry & Food Recalls (Pre-loaded with sample items including recalled lot)
+  // 3. Pantry & Food Recalls (Pre-loaded with sample items including recalled lot)
   const [pantryItems, setPantryItems] = useState<PantryItem[]>([
     {
       id: 'pantry_item_1',
@@ -186,7 +169,6 @@ export default function HomePage() {
         setActiveTab={setActiveTab}
         profile={profile}
         onOpenProfileModal={() => setIsProfileModalOpen(true)}
-        onOpenSettingsModal={() => setIsSettingsModalOpen(true)}
         onToggleChat={() => setIsChatOpen(!isChatOpen)}
         isChatOpen={isChatOpen}
         activeRecallCount={activeRecallCount}
@@ -280,13 +262,6 @@ export default function HomePage() {
         }}
       />
 
-      <SettingsModal
-        isOpen={isSettingsModalOpen}
-        onClose={() => setIsSettingsModalOpen(false)}
-        apiKey={groqApiKey}
-        onSaveApiKey={handleSaveApiKey}
-      />
-
       <RecallSimulatorModal
         isOpen={activeRecallModal.isOpen}
         onClose={() => setActiveRecallModal({ isOpen: false, recall: null, pantryItem: null })}
@@ -298,12 +273,8 @@ export default function HomePage() {
       <NongChoiceChatDrawer
         isOpen={isChatOpen}
         onClose={() => setIsChatOpen(false)}
-        apiKey={groqApiKey}
-        onOpenSettings={() => {
-          setIsChatOpen(false);
-          setIsSettingsModalOpen(true);
-        }}
         contextProduct={selectedProduct}
+        profile={profile}
       />
     </div>
   );

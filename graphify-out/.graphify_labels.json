@@ -5,7 +5,7 @@
   "3": "compilerOptions",
   "4": "package.json",
   "5": "HealthProfileModal.tsx",
-  "6": "SettingsModal.tsx",
+  "6": "include",
   "7": "tailwind.config.ts",
   "8": "layout.tsx",
   "9": "postcss.config.js",

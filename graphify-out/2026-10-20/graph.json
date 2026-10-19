@@ -32,7 +32,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "package",
-      "community": 1,
+      "community": 4,
       "community_name": "package.json",
       "norm_label": "package.json"
     },
@@ -43,7 +43,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "package_name",
-      "community": 1,
+      "community": 4,
       "community_name": "package.json",
       "norm_label": "name"
     },
@@ -54,7 +54,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "package_version",
-      "community": 1,
+      "community": 4,
       "community_name": "package.json",
       "norm_label": "version"
     },
@@ -65,7 +65,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "package_private",
-      "community": 1,
+      "community": 4,
       "community_name": "package.json",
       "norm_label": "private"
     },
@@ -76,7 +76,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "package_scripts",
-      "community": 1,
+      "community": 4,
       "community_name": "package.json",
       "norm_label": "scripts"
     },
@@ -87,7 +87,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "package_scripts_dev",
-      "community": 1,
+      "community": 4,
       "community_name": "package.json",
       "norm_label": "dev"
     },
@@ -98,7 +98,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "package_scripts_build",
-      "community": 1,
+      "community": 4,
       "community_name": "package.json",
       "norm_label": "build"
     },
@@ -109,7 +109,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "package_scripts_start",
-      "community": 1,
+      "community": 4,
       "community_name": "package.json",
       "norm_label": "start"
     },
@@ -121,96 +121,96 @@
       "_origin": "ast",
       "id": "package_dependencies",
       "community": 4,
-      "community_name": "dependencies",
+      "community_name": "package.json",
       "norm_label": "dependencies"
     },
     {
-      "label": "next",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L11",
-      "_origin": "ast",
-      "id": "package_dependencies_next",
-      "community": 4,
-      "community_name": "dependencies",
-      "norm_label": "next"
-    },
-    {
-      "label": "next",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L11",
-      "_origin": "ast",
-      "id": "next",
-      "community": 4,
-      "community_name": "dependencies",
-      "norm_label": "next"
-    },
-    {
-      "label": "react",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L12",
-      "_origin": "ast",
-      "id": "package_dependencies_react",
-      "community": 4,
-      "community_name": "dependencies",
-      "norm_label": "react"
-    },
-    {
-      "label": "react",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L12",
-      "_origin": "ast",
-      "id": "react",
-      "community": 4,
-      "community_name": "dependencies",
-      "norm_label": "react"
-    },
-    {
-      "label": "react-dom",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L13",
-      "_origin": "ast",
-      "id": "package_dependencies_react_dom",
-      "community": 4,
-      "community_name": "dependencies",
-      "norm_label": "react-dom"
-    },
-    {
-      "label": "react-dom",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L13",
-      "_origin": "ast",
-      "id": "react_dom",
-      "community": 4,
-      "community_name": "dependencies",
-      "norm_label": "react-dom"
-    },
-    {
       "label": "lucide-react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L14",
+      "source_location": "L11",
       "_origin": "ast",
       "id": "package_dependencies_lucide_react",
       "community": 4,
-      "community_name": "dependencies",
+      "community_name": "package.json",
       "norm_label": "lucide-react"
     },
     {
       "label": "lucide-react",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L14",
+      "source_location": "L11",
       "_origin": "ast",
       "id": "lucide_react",
       "community": 4,
-      "community_name": "dependencies",
+      "community_name": "package.json",
       "norm_label": "lucide-react"
+    },
+    {
+      "label": "next",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "package_dependencies_next",
+      "community": 4,
+      "community_name": "package.json",
+      "norm_label": "next"
+    },
+    {
+      "label": "next",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "next",
+      "community": 4,
+      "community_name": "package.json",
+      "norm_label": "next"
+    },
+    {
+      "label": "react",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "package_dependencies_react",
+      "community": 4,
+      "community_name": "package.json",
+      "norm_label": "react"
+    },
+    {
+      "label": "react",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "react",
+      "community": 4,
+      "community_name": "package.json",
+      "norm_label": "react"
+    },
+    {
+      "label": "react-dom",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "package_dependencies_react_dom",
+      "community": 4,
+      "community_name": "package.json",
+      "norm_label": "react-dom"
+    },
+    {
+      "label": "react-dom",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "react_dom",
+      "community": 4,
+      "community_name": "package.json",
+      "norm_label": "react-dom"
     },
     {
       "label": "devDependencies",
@@ -220,7 +220,7 @@
       "_origin": "ast",
       "id": "package_devdependencies",
       "community": 1,
-      "community_name": "package.json",
+      "community_name": "devDependencies",
       "norm_label": "devdependencies"
     },
     {
@@ -231,7 +231,7 @@
       "_origin": "ast",
       "id": "package_devdependencies_types_node",
       "community": 1,
-      "community_name": "package.json",
+      "community_name": "devDependencies",
       "norm_label": "@types/node"
     },
     {
@@ -242,7 +242,7 @@
       "_origin": "ast",
       "id": "types_node",
       "community": 1,
-      "community_name": "package.json",
+      "community_name": "devDependencies",
       "norm_label": "@types/node"
     },
     {
@@ -253,7 +253,7 @@
       "_origin": "ast",
       "id": "package_devdependencies_types_react",
       "community": 1,
-      "community_name": "package.json",
+      "community_name": "devDependencies",
       "norm_label": "@types/react"
     },
     {
@@ -264,7 +264,7 @@
       "_origin": "ast",
       "id": "types_react",
       "community": 1,
-      "community_name": "package.json",
+      "community_name": "devDependencies",
       "norm_label": "@types/react"
     },
     {
@@ -275,7 +275,7 @@
       "_origin": "ast",
       "id": "package_devdependencies_types_react_dom",
       "community": 1,
-      "community_name": "package.json",
+      "community_name": "devDependencies",
       "norm_label": "@types/react-dom"
     },
     {
@@ -286,30 +286,107 @@
       "_origin": "ast",
       "id": "types_react_dom",
       "community": 1,
-      "community_name": "package.json",
+      "community_name": "devDependencies",
       "norm_label": "@types/react-dom"
+    },
+    {
+      "label": "autoprefixer",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "package_devdependencies_autoprefixer",
+      "community": 1,
+      "community_name": "devDependencies",
+      "norm_label": "autoprefixer"
+    },
+    {
+      "label": "autoprefixer",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "autoprefixer",
+      "community": 1,
+      "community_name": "devDependencies",
+      "norm_label": "autoprefixer"
+    },
+    {
+      "label": "postcss",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "package_devdependencies_postcss",
+      "community": 1,
+      "community_name": "devDependencies",
+      "norm_label": "postcss"
+    },
+    {
+      "label": "postcss",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "postcss",
+      "community": 1,
+      "community_name": "devDependencies",
+      "norm_label": "postcss"
+    },
+    {
+      "label": "tailwindcss",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "package_devdependencies_tailwindcss",
+      "community": 1,
+      "community_name": "devDependencies",
+      "norm_label": "tailwindcss"
+    },
+    {
+      "label": "tailwindcss",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "tailwindcss",
+      "community": 1,
+      "community_name": "devDependencies",
+      "norm_label": "tailwindcss"
     },
     {
       "label": "typescript",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L20",
+      "source_location": "L23",
       "_origin": "ast",
       "id": "package_devdependencies_typescript",
       "community": 1,
-      "community_name": "package.json",
+      "community_name": "devDependencies",
       "norm_label": "typescript"
     },
     {
       "label": "typescript",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L20",
+      "source_location": "L23",
       "_origin": "ast",
       "id": "typescript",
       "community": 1,
-      "community_name": "package.json",
+      "community_name": "devDependencies",
       "norm_label": "typescript"
+    },
+    {
+      "label": "postcss.config.js",
+      "file_type": "code",
+      "source_file": "postcss.config.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "postcss_config",
+      "community": 9,
+      "community_name": "postcss.config.js",
+      "norm_label": "postcss.config.js"
     },
     {
       "label": "route.ts",
@@ -409,8 +486,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_dailybudgetring",
-      "community": 2,
-      "community_name": "page.tsx",
+      "community": 0,
+      "community_name": "UserHealthProfile",
       "norm_label": "dailybudgetring.tsx"
     },
     {
@@ -422,8 +499,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_dailybudgetring_dailybudgetprops",
-      "community": 2,
-      "community_name": "page.tsx",
+      "community": 0,
+      "community_name": "UserHealthProfile",
       "norm_label": "dailybudgetprops"
     },
     {
@@ -434,8 +511,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_dailybudgetring_dailybudgetring",
-      "community": 2,
-      "community_name": "page.tsx",
+      "community": 0,
+      "community_name": "UserHealthProfile",
       "norm_label": "dailybudgetring()"
     },
     {
@@ -445,8 +522,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_healthprofilemodal",
-      "community": 0,
-      "community_name": "index.ts",
+      "community": 5,
+      "community_name": "HealthProfileModal.tsx",
       "norm_label": "healthprofilemodal.tsx"
     },
     {
@@ -458,8 +535,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_healthprofilemodal_healthprofilemodalprops",
-      "community": 0,
-      "community_name": "index.ts",
+      "community": 5,
+      "community_name": "HealthProfileModal.tsx",
       "norm_label": "healthprofilemodalprops"
     },
     {
@@ -470,8 +547,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_healthprofilemodal_healthprofilemodal",
-      "community": 0,
-      "community_name": "index.ts",
+      "community": 5,
+      "community_name": "HealthProfileModal.tsx",
       "norm_label": "healthprofilemodal()"
     },
     {
@@ -481,8 +558,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_navbar",
-      "community": 2,
-      "community_name": "page.tsx",
+      "community": 0,
+      "community_name": "UserHealthProfile",
       "norm_label": "navbar.tsx"
     },
     {
@@ -494,8 +571,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_navbar_navbarprops",
-      "community": 2,
-      "community_name": "page.tsx",
+      "community": 0,
+      "community_name": "UserHealthProfile",
       "norm_label": "navbarprops"
     },
     {
@@ -506,8 +583,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_navbar_navbar",
-      "community": 2,
-      "community_name": "page.tsx",
+      "community": 0,
+      "community_name": "UserHealthProfile",
       "norm_label": "navbar()"
     },
     {
@@ -517,8 +594,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_nongchoicechatdrawer",
-      "community": 0,
-      "community_name": "index.ts",
+      "community": 2,
+      "community_name": "page.tsx",
       "norm_label": "nongchoicechatdrawer.tsx"
     },
     {
@@ -530,8 +607,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_nongchoicechatdrawer_nongchoicechatdrawerprops",
-      "community": 0,
-      "community_name": "index.ts",
+      "community": 2,
+      "community_name": "page.tsx",
       "norm_label": "nongchoicechatdrawerprops"
     },
     {
@@ -542,8 +619,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_nongchoicechatdrawer_nongchoicechatdrawer",
-      "community": 0,
-      "community_name": "index.ts",
+      "community": 2,
+      "community_name": "page.tsx",
       "norm_label": "nongchoicechatdrawer()"
     },
     {
@@ -553,8 +630,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_pantrylottracker",
-      "community": 5,
-      "community_name": "RecallNotice",
+      "community": 2,
+      "community_name": "page.tsx",
       "norm_label": "pantrylottracker.tsx"
     },
     {
@@ -566,8 +643,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_pantrylottracker_pantrylottrackerprops",
-      "community": 5,
-      "community_name": "RecallNotice",
+      "community": 2,
+      "community_name": "page.tsx",
       "norm_label": "pantrylottrackerprops"
     },
     {
@@ -578,8 +655,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_pantrylottracker_pantrylottracker",
-      "community": 5,
-      "community_name": "RecallNotice",
+      "community": 2,
+      "community_name": "page.tsx",
       "norm_label": "pantrylottracker()"
     },
     {
@@ -612,8 +689,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_recallsimulatormodal",
-      "community": 5,
-      "community_name": "RecallNotice",
+      "community": 2,
+      "community_name": "page.tsx",
       "norm_label": "recallsimulatormodal.tsx"
     },
     {
@@ -625,8 +702,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_recallsimulatormodal_recallsimulatormodalprops",
-      "community": 5,
-      "community_name": "RecallNotice",
+      "community": 2,
+      "community_name": "page.tsx",
       "norm_label": "recallsimulatormodalprops"
     },
     {
@@ -637,8 +714,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_recallsimulatormodal_recallsimulatormodal",
-      "community": 5,
-      "community_name": "RecallNotice",
+      "community": 2,
+      "community_name": "page.tsx",
       "norm_label": "recallsimulatormodal()"
     },
     {
@@ -649,7 +726,7 @@
       "_origin": "ast",
       "id": "src_components_scannersection",
       "community": 0,
-      "community_name": "index.ts",
+      "community_name": "UserHealthProfile",
       "norm_label": "scannersection.tsx"
     },
     {
@@ -662,7 +739,7 @@
       "_origin": "ast",
       "id": "src_components_scannersection_scannersectionprops",
       "community": 0,
-      "community_name": "index.ts",
+      "community_name": "UserHealthProfile",
       "norm_label": "scannersectionprops"
     },
     {
@@ -674,7 +751,7 @@
       "_origin": "ast",
       "id": "src_components_scannersection_scannersection",
       "community": 0,
-      "community_name": "index.ts",
+      "community_name": "UserHealthProfile",
       "norm_label": "scannersection()"
     },
     {
@@ -684,8 +761,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_components_settingsmodal",
-      "community": 2,
-      "community_name": "page.tsx",
+      "community": 6,
+      "community_name": "SettingsModal.tsx",
       "norm_label": "settingsmodal.tsx"
     },
     {
@@ -697,8 +774,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_components_settingsmodal_settingsmodalprops",
-      "community": 2,
-      "community_name": "page.tsx",
+      "community": 6,
+      "community_name": "SettingsModal.tsx",
       "norm_label": "settingsmodalprops"
     },
     {
@@ -709,8 +786,8 @@
       "_callable": true,
       "_origin": "ast",
       "id": "src_components_settingsmodal_settingsmodal",
-      "community": 2,
-      "community_name": "page.tsx",
+      "community": 6,
+      "community_name": "SettingsModal.tsx",
       "norm_label": "settingsmodal()"
     },
     {
@@ -721,7 +798,7 @@
       "_origin": "ast",
       "id": "src_components_smartswapsection",
       "community": 0,
-      "community_name": "index.ts",
+      "community_name": "UserHealthProfile",
       "norm_label": "smartswapsection.tsx"
     },
     {
@@ -734,7 +811,7 @@
       "_origin": "ast",
       "id": "src_components_smartswapsection_smartswapsectionprops",
       "community": 0,
-      "community_name": "index.ts",
+      "community_name": "UserHealthProfile",
       "norm_label": "smartswapsectionprops"
     },
     {
@@ -746,7 +823,7 @@
       "_origin": "ast",
       "id": "src_components_smartswapsection_smartswapsection",
       "community": 0,
-      "community_name": "index.ts",
+      "community_name": "UserHealthProfile",
       "norm_label": "smartswapsection()"
     },
     {
@@ -801,7 +878,7 @@
       "_origin": "ast",
       "id": "src_lib_scorecalculator",
       "community": 0,
-      "community_name": "index.ts",
+      "community_name": "UserHealthProfile",
       "norm_label": "scorecalculator.ts"
     },
     {
@@ -814,7 +891,7 @@
       "_origin": "ast",
       "id": "src_lib_scorecalculator_scorebreakdown",
       "community": 0,
-      "community_name": "index.ts",
+      "community_name": "UserHealthProfile",
       "norm_label": "scorebreakdown"
     },
     {
@@ -826,7 +903,7 @@
       "_origin": "ast",
       "id": "src_lib_scorecalculator_calculatechoicescore",
       "community": 0,
-      "community_name": "index.ts",
+      "community_name": "UserHealthProfile",
       "norm_label": "calculatechoicescore()"
     },
     {
@@ -836,8 +913,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_types_index",
-      "community": 0,
-      "community_name": "index.ts",
+      "community": 2,
+      "community_name": "page.tsx",
       "norm_label": "index.ts"
     },
     {
@@ -849,8 +926,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_types_index_healthcondition",
-      "community": 0,
-      "community_name": "index.ts",
+      "community": 5,
+      "community_name": "HealthProfileModal.tsx",
       "norm_label": "healthcondition"
     },
     {
@@ -863,7 +940,7 @@
       "_origin": "ast",
       "id": "src_types_index_userhealthprofile",
       "community": 0,
-      "community_name": "index.ts",
+      "community_name": "UserHealthProfile",
       "norm_label": "userhealthprofile"
     },
     {
@@ -875,8 +952,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_types_index_nutritionfacts",
-      "community": 0,
-      "community_name": "index.ts",
+      "community": 2,
+      "community_name": "page.tsx",
       "norm_label": "nutritionfacts"
     },
     {
@@ -889,7 +966,7 @@
       "_origin": "ast",
       "id": "src_types_index_foodproduct",
       "community": 0,
-      "community_name": "index.ts",
+      "community_name": "UserHealthProfile",
       "norm_label": "foodproduct"
     },
     {
@@ -901,8 +978,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_types_index_pantryitem",
-      "community": 5,
-      "community_name": "RecallNotice",
+      "community": 2,
+      "community_name": "page.tsx",
       "norm_label": "pantryitem"
     },
     {
@@ -914,8 +991,8 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_types_index_recallnotice",
-      "community": 5,
-      "community_name": "RecallNotice",
+      "community": 2,
+      "community_name": "page.tsx",
       "norm_label": "recallnotice"
     },
     {
@@ -927,9 +1004,31 @@
       "_callable_class": true,
       "_origin": "ast",
       "id": "src_types_index_chatmessage",
-      "community": 0,
-      "community_name": "index.ts",
+      "community": 2,
+      "community_name": "page.tsx",
       "norm_label": "chatmessage"
+    },
+    {
+      "label": "tailwind.config.ts",
+      "file_type": "code",
+      "source_file": "tailwind.config.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tailwind_config",
+      "community": 7,
+      "community_name": "tailwind.config.ts",
+      "norm_label": "tailwind.config.ts"
+    },
+    {
+      "label": "config",
+      "file_type": "code",
+      "source_file": "tailwind.config.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "tailwind_config_config",
+      "community": 7,
+      "community_name": "tailwind.config.ts",
+      "norm_label": "config"
     },
     {
       "label": "tsconfig.json",
@@ -938,8 +1037,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tsconfig",
-      "community": 9,
-      "community_name": "tsconfig.json",
+      "community": 3,
+      "community_name": "compilerOptions",
       "norm_label": "tsconfig.json"
     },
     {
@@ -971,8 +1070,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "tsconfig_compileroptions_lib",
-      "community": 7,
-      "community_name": "lib",
+      "community": 3,
+      "community_name": "compilerOptions",
       "norm_label": "lib"
     },
     {
@@ -982,8 +1081,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "ref_dom",
-      "community": 7,
-      "community_name": "lib",
+      "community": 3,
+      "community_name": "compilerOptions",
       "norm_label": "dom"
     },
     {
@@ -993,8 +1092,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "ref_dom_iterable",
-      "community": 7,
-      "community_name": "lib",
+      "community": 3,
+      "community_name": "compilerOptions",
       "norm_label": "dom.iterable"
     },
     {
@@ -1004,8 +1103,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "ref_esnext",
-      "community": 7,
-      "community_name": "lib",
+      "community": 3,
+      "community_name": "compilerOptions",
       "norm_label": "esnext"
     },
     {
@@ -1158,8 +1257,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "tsconfig_include",
-      "community": 6,
-      "community_name": "include",
+      "community": 3,
+      "community_name": "compilerOptions",
       "norm_label": "include"
     },
     {
@@ -1169,8 +1268,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "ref_next_env_d_ts",
-      "community": 6,
-      "community_name": "include",
+      "community": 3,
+      "community_name": "compilerOptions",
       "norm_label": "next-env.d.ts"
     },
     {
@@ -1180,8 +1279,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "ref_ts",
-      "community": 6,
-      "community_name": "include",
+      "community": 3,
+      "community_name": "compilerOptions",
       "norm_label": "**/*.ts"
     },
     {
@@ -1191,8 +1290,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "ref_tsx",
-      "community": 6,
-      "community_name": "include",
+      "community": 3,
+      "community_name": "compilerOptions",
       "norm_label": "**/*.tsx"
     },
     {
@@ -1202,8 +1301,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "ref_next_types_ts",
-      "community": 6,
-      "community_name": "include",
+      "community": 3,
+      "community_name": "compilerOptions",
       "norm_label": ".next/types/**/*.ts"
     },
     {
@@ -1213,8 +1312,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "tsconfig_exclude",
-      "community": 9,
-      "community_name": "tsconfig.json",
+      "community": 3,
+      "community_name": "compilerOptions",
       "norm_label": "exclude"
     },
     {
@@ -1224,8 +1323,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "ref_node_modules",
-      "community": 9,
-      "community_name": "tsconfig.json",
+      "community": 3,
+      "community_name": "compilerOptions",
       "norm_label": "node_modules"
     }
   ],
@@ -1344,7 +1443,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L14",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_dependencies",
@@ -1355,7 +1454,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_dependencies",
@@ -1366,7 +1465,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_dependencies",
@@ -1377,7 +1476,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_dependencies",
@@ -1392,6 +1491,18 @@
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
+      "source": "package_dependencies_lucide_react",
+      "target": "lucide_react",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L12",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
       "source": "package_dependencies_next",
       "target": "next",
       "confidence_score": 1.0
@@ -1400,7 +1511,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -1412,7 +1523,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -1421,15 +1532,36 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "imports",
+      "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L14",
+      "source_location": "L20",
       "weight": 1.0,
-      "context": "import",
       "_origin": "ast",
-      "source": "package_dependencies_lucide_react",
-      "target": "lucide_react",
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_autoprefixer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_postcss",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_tailwindcss",
       "confidence_score": 1.0
     },
     {
@@ -1469,7 +1601,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L20",
+      "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -1517,6 +1649,42 @@
       "confidence": "EXTRACTED",
       "source_file": "package.json",
       "source_location": "L20",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "package_devdependencies_autoprefixer",
+      "target": "autoprefixer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "package_devdependencies_postcss",
+      "target": "postcss",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L22",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "package_devdependencies_tailwindcss",
+      "target": "tailwindcss",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L23",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -2836,6 +3004,17 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "tailwind.config.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tailwind_config",
+      "target": "tailwind_config_config",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "tsconfig.json",
       "source_location": "L2",
       "weight": 1.0,
@@ -3129,5 +3308,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "c93129beea6a6068db61634b1c08ea65d25b81b5"
+  "built_at_commit": "e83b553169379e4e547d24033e2e9046b16e4238"
 }
