@@ -1,7 +1,7 @@
 {
   "0": "UserHealthProfile",
   "1": "devDependencies",
-  "2": "page.tsx",
+  "2": "index.ts",
   "3": "compilerOptions",
   "4": "package.json",
   "5": "HealthProfileModal.tsx",
@@ -10,5 +10,6 @@
   "8": "layout.tsx",
   "9": "postcss.config.js",
   "10": "next.config.js",
-  "11": "route.ts"
+  "11": "route.ts",
+  "12": "page.tsx"
 }

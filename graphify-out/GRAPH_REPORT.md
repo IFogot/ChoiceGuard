@@ -1,23 +1,23 @@
 # Graph Report - ChoiceGuard  (2026-10-20)
 
 ## Corpus Check
-- 21 files · ~121,920 words
+- 23 files · ~124,073 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 117 nodes · 174 edges · 12 communities (8 shown, 4 thin omitted)
+- 122 nodes · 183 edges · 13 communities (9 shown, 4 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `803f4630`
+- Built from commit: `b36aaa48`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - UserHealthProfile
 - devDependencies
-- page.tsx
+- index.ts
 - compilerOptions
 - package.json
 - HealthProfileModal.tsx
@@ -26,10 +26,11 @@
 - layout.tsx
 - next.config.js
 - route.ts
+- page.tsx
 
 ## God Nodes (most connected - your core abstractions)
-1. `compilerOptions` - 16 edges
-2. `UserHealthProfile` - 15 edges
+1. `UserHealthProfile` - 16 edges
+2. `compilerOptions` - 16 edges
 3. `FoodProduct` - 10 edges
 4. `RecallNotice` - 7 edges
 5. `PantryItem` - 6 edges
@@ -54,19 +55,19 @@
 ## Import Cycles
 - None detected.
 
-## Communities (12 total, 4 thin omitted)
+## Communities (13 total, 4 thin omitted)
 
 ### Community 0 - "UserHealthProfile"
-Cohesion: 0.29
-Nodes (11): NongChoiceChatDrawer(), NongChoiceChatDrawerProps, ScannerSection(), ScannerSectionProps, SmartSwapSection(), SmartSwapSectionProps, calculateChoiceScore(), ScoreBreakdown (+3 more)
+Cohesion: 0.36
+Nodes (9): NongChoiceChatDrawerProps, ScannerSection(), ScannerSectionProps, SmartSwapSection(), SmartSwapSectionProps, calculateChoiceScore(), ScoreBreakdown, FoodProduct (+1 more)
 
 ### Community 1 - "devDependencies"
 Cohesion: 0.13
 Nodes (15): autoprefixer, devDependencies, autoprefixer, postcss, tailwindcss, @types/node, @types/react, @types/react-dom (+7 more)
 
-### Community 2 - "page.tsx"
-Cohesion: 0.15
-Nodes (17): DailyBudgetProps, DailyBudgetRing(), Navbar(), NavbarProps, MOCK_FSMA_CTE_EVENTS, PantryLotTracker(), PantryLotTrackerProps, ProducerDashboard() (+9 more)
+### Community 2 - "index.ts"
+Cohesion: 0.21
+Nodes (12): MOCK_FSMA_CTE_EVENTS, PantryLotTracker(), PantryLotTrackerProps, RecallSimulatorModal(), RecallSimulatorModalProps, RECALL_NOTICES, ChatMessage, CTEEvent (+4 more)
 
 ### Community 3 - "compilerOptions"
 Cohesion: 0.11
@@ -84,8 +85,12 @@ Nodes (3): HealthProfileModal(), HealthProfileModalProps, HealthCondition
 Cohesion: 0.25
 Nodes (7): next-env.d.ts, .next/types/**/*.ts, node_modules, **/*.ts, **/*.tsx, exclude, include
 
+### Community 12 - "page.tsx"
+Cohesion: 0.15
+Nodes (10): DailyBudgetProps, DailyBudgetRing(), Navbar(), NavbarProps, NongChoiceChatDrawer(), PitchDeckBmcModal(), PitchDeckBmcModalProps, ProducerDashboard() (+2 more)
+
 ## Knowledge Gaps
-- **47 isolated node(s):** `nextConfig`, `name`, `version`, `private`, `dev` (+42 more)
+- **48 isolated node(s):** `nextConfig`, `name`, `version`, `private`, `dev` (+43 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -93,15 +98,13 @@ Nodes (7): next-env.d.ts, .next/types/**/*.ts, node_modules, **/*.ts, **/*.tsx, 
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `devDependencies` connect `devDependencies` to `package.json`?**
-  _High betweenness centrality (0.048) - this node is a cross-community bridge._
-- **Why does `compilerOptions` connect `compilerOptions` to `include`?**
   _High betweenness centrality (0.044) - this node is a cross-community bridge._
+- **Why does `compilerOptions` connect `compilerOptions` to `include`?**
+  _High betweenness centrality (0.040) - this node is a cross-community bridge._
 - **What connects `nextConfig`, `name`, `version` to the rest of the system?**
-  _47 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _48 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
-- **Should `page.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.1452991452991453 - nodes in this community are weakly interconnected._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.10526315789473684 - nodes in this community are weakly interconnected._
 - **Should `package.json` be split into smaller, more focused modules?**
