@@ -251,6 +251,9 @@ export default function HomePage() {
           <img
             src="/logo.png"
             alt="ChoiceGuard Logo"
+            width={24}
+            height={24}
+            style={{ width: '24px', height: '24px', maxWidth: '24px', maxHeight: '24px' }}
             className="h-6 w-6 rounded-full object-contain ring-1 ring-teal-500/30"
           />
           <span>

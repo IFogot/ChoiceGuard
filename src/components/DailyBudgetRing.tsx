@@ -34,7 +34,10 @@ export const DailyBudgetRing: React.FC<DailyBudgetProps> = ({ profile }) => {
       <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
         {/* Left: Concentric Activity Rings */}
         <div className="flex items-center gap-5">
-          <div className="relative flex items-center justify-center w-36 h-36 flex-shrink-0">
+          <div
+            className="relative flex items-center justify-center w-36 h-36 flex-shrink-0"
+            style={{ width: '144px', height: '144px', minWidth: '144px', minHeight: '144px' }}
+          >
             <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 130 130">
               {/* Background Tracks */}
               <circle cx="65" cy="65" r={radiusSodium} stroke="rgba(13, 148, 136, 0.15)" strokeWidth="9" fill="none" />

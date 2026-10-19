@@ -134,6 +134,9 @@ export const NongChoiceChatDrawer: React.FC<NongChoiceChatDrawerProps> = ({
           <img
             src="/logo.png"
             alt="Nong Choice"
+            width={40}
+            height={40}
+            style={{ width: '40px', height: '40px', maxWidth: '40px', maxHeight: '40px' }}
             className="h-10 w-10 rounded-full object-contain shadow-md shadow-teal-500/25 ring-2 ring-teal-500/30 flex-shrink-0"
           />
           <div>
@@ -185,6 +188,9 @@ export const NongChoiceChatDrawer: React.FC<NongChoiceChatDrawerProps> = ({
                   <img
                     src="/logo.png"
                     alt="Nong Choice"
+                    width={28}
+                    height={28}
+                    style={{ width: '28px', height: '28px', maxWidth: '28px', maxHeight: '28px' }}
                     className="h-7 w-7 rounded-full object-contain ring-1 ring-teal-500/30 shadow-sm"
                   />
                 )}

@@ -22,13 +22,14 @@ export async function POST(req: NextRequest) {
     const apiKey = userKey?.trim() || process.env.GROQ_API_KEY;
 
     if (!apiKey) {
-      return NextResponse.json(
-        {
-          error: 'MISSING_API_KEY',
-          message: 'กรุณาระบุ Groq API Key ในหน้าการตั้งค่า (Settings) หรือตั้งค่า GROQ_API_KEY ในระบบ เพื่อเริ่มสนทนากับน้องช้อยส์ AI',
-        },
-        { status: 401 }
-      );
+      // Provide intelligent fallback for live demo/pitching preview
+      let simulatedReply = `สวัสดีค่ะ น้องช้อยส์ AI ยินดีให้คำแนะนำค่ะ! 🥗✨\n\n`;
+      if (contextProduct) {
+        simulatedReply += `สำหรับ **${contextProduct.name}** มีโซเดียม ${contextProduct.nutrition?.sodiumMg} มก. (${contextProduct.healthierChoiceCertified ? 'ได้รับตราทางเลือกสุขภาพ อย. แล้ว มีความปลอดภัยและโซเดียมต่ำ' : 'แนะนำให้ทานแต่พอดี หรือใช้ระบบ Smart Swap เพื่อลดโซเดียมลง 40-50% ค่ะ'})\n\n`;
+      }
+      simulatedReply += `💡 *คำแนะนำ:* คุณสามารถคลิกไอคอน **ตั้งค่า (⚙️)** ที่มุมขวาบน เพื่อกรอก Groq API Key ของคุณสำหรับเปิดใช้งานระบบวิเคราะห์สดเต็มรูปแบบผ่าน Groq LPU ได้ตลอดเวลาค่ะ!`;
+
+      return NextResponse.json({ reply: simulatedReply, simulated: true });
     }
 
     const systemWithContext = contextProduct

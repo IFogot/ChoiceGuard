@@ -49,6 +49,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           <img
             src="/logo.png"
             alt="ChoiceGuard Logo"
+            width={48}
+            height={48}
+            style={{ width: '48px', height: '48px', maxWidth: '48px', maxHeight: '48px' }}
             className="h-10 w-10 md:h-12 md:w-12 rounded-full object-contain shadow-md shadow-teal-500/25 ring-2 ring-teal-500/30 flex-shrink-0"
           />
           <div>
