@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS households (
 CREATE TABLE IF NOT EXISTS health_profiles (
   id UUID PRIMARY KEY,
   household_id UUID NOT NULL REFERENCES households(id) ON DELETE CASCADE,
+  source_key TEXT NOT NULL CHECK (char_length(source_key) BETWEEN 1 AND 96),
   name TEXT NOT NULL CHECK (char_length(name) BETWEEN 1 AND 80),
   relationship TEXT CHECK (relationship IS NULL OR char_length(relationship) <= 80),
   age SMALLINT CHECK (age IS NULL OR age BETWEEN 0 AND 130),
@@ -21,7 +22,8 @@ CREATE TABLE IF NOT EXISTS health_profiles (
   daily_budget JSONB NOT NULL,
   daily_consumed JSONB NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE(household_id, source_key)
 );
 
 CREATE INDEX IF NOT EXISTS health_profiles_household_id_idx ON health_profiles(household_id);
