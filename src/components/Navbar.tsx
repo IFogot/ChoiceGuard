@@ -1,15 +1,13 @@
-'use client';
-
 import React from 'react';
 import { ShieldCheck, Sparkles, Activity, RefreshCw, AlertTriangle, Layers } from 'lucide-react';
 import { UserHealthProfile } from '../types';
+import { playTactileTap } from '../lib/hapticAudio';
 
 interface NavbarProps {
   activeTab: 'scan' | 'swap' | 'pantry' | 'dashboard';
   setActiveTab: (tab: 'scan' | 'swap' | 'pantry' | 'dashboard') => void;
   profile: UserHealthProfile;
   onOpenProfileModal: () => void;
-  onOpenBmcModal?: () => void;
   onToggleChat: () => void;
   isChatOpen: boolean;
   activeRecallCount: number;
@@ -20,7 +18,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   profile,
   onOpenProfileModal,
-  onOpenBmcModal,
   onToggleChat,
   isChatOpen,
   activeRecallCount,
@@ -75,9 +72,12 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Navigation Tabs */}
         <div className="flex items-center gap-1 sm:gap-1.5 order-3 md:order-2 w-full md:w-auto justify-center overflow-x-auto py-1">
           <button
-            onClick={() => setActiveTab('scan')}
-            className={`glass-button text-xs md:text-sm py-1.5 px-3 md:px-4 ${
-              activeTab === 'scan' ? 'glass-button-primary' : ''
+            onClick={() => {
+              playTactileTap();
+              setActiveTab('scan');
+            }}
+            className={`glass-button bouncy-hover text-xs md:text-sm py-1.5 px-3 md:px-4 ${
+              activeTab === 'scan' ? 'glass-button-primary shadow-md' : ''
             }`}
           >
             <Activity className="h-4 w-4" />
@@ -85,9 +85,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           <button
-            onClick={() => setActiveTab('swap')}
-            className={`glass-button text-xs md:text-sm py-1.5 px-3 md:px-4 ${
-              activeTab === 'swap' ? 'glass-button-primary' : ''
+            onClick={() => {
+              playTactileTap();
+              setActiveTab('swap');
+            }}
+            className={`glass-button bouncy-hover text-xs md:text-sm py-1.5 px-3 md:px-4 ${
+              activeTab === 'swap' ? 'glass-button-primary shadow-md' : ''
             }`}
           >
             <RefreshCw className="h-4 w-4" />
@@ -95,9 +98,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           <button
-            onClick={() => setActiveTab('pantry')}
-            className={`glass-button text-xs md:text-sm py-1.5 px-3 md:px-4 relative ${
-              activeTab === 'pantry' ? 'glass-button-primary' : ''
+            onClick={() => {
+              playTactileTap();
+              setActiveTab('pantry');
+            }}
+            className={`glass-button bouncy-hover text-xs md:text-sm py-1.5 px-3 md:px-4 relative ${
+              activeTab === 'pantry' ? 'glass-button-primary shadow-md' : ''
             }`}
           >
             <AlertTriangle className="h-4 w-4" />
@@ -110,9 +116,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           <button
-            onClick={() => setActiveTab('dashboard')}
-            className={`glass-button text-xs md:text-sm py-1.5 px-3 md:px-4 ${
-              activeTab === 'dashboard' ? 'glass-button-primary' : ''
+            onClick={() => {
+              playTactileTap();
+              setActiveTab('dashboard');
+            }}
+            className={`glass-button bouncy-hover text-xs md:text-sm py-1.5 px-3 md:px-4 ${
+              activeTab === 'dashboard' ? 'glass-button-primary shadow-md' : ''
             }`}
           >
             <Layers className="h-4 w-4" />
@@ -120,24 +129,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         </div>
 
-        {/* Right Actions: Profile Switcher, BMC & SDG, and AI Copilot */}
+        {/* Right Actions: Profile Switcher and AI Copilot */}
         <div className="flex items-center gap-2 order-2 md:order-3">
-          {/* BMC & SDG Pitch Deck Button */}
-          {onOpenBmcModal && (
-            <button
-              onClick={onOpenBmcModal}
-              className="glass-pill px-2.5 py-1.5 text-xs font-bold text-teal-800 hover:text-teal-900 border-teal-500/30 hover:border-teal-500 transition hidden sm:flex items-center gap-1 shadow-xs"
-              title="ดูแผนธุรกิจ Business Model Canvas & ผลกระทบ SDG 3, 9, 12"
-            >
-              <span>📋</span>
-              <span>BMC &amp; SDG</span>
-            </button>
-          )}
-
           {/* Active Profile Pill */}
           <button
-            onClick={onOpenProfileModal}
-            className="glass-pill flex items-center gap-2 px-3 py-1.5 text-xs font-semibold hover:border-teal-400 transition"
+            onClick={() => {
+              playTactileTap();
+              onOpenProfileModal();
+            }}
+            className="glass-pill bouncy-hover flex items-center gap-2 px-3 py-1.5 text-xs font-semibold hover:border-teal-400 transition"
             title="คลิกเพื่อสลับโปรไฟล์สุขภาพ"
           >
             <span

@@ -131,3 +131,49 @@ export interface ChatMessage {
   productContext?: Partial<FoodProduct>;
 }
 
+export type MealPeriod = 'breakfast' | 'lunch' | 'dinner' | 'snack';
+
+export interface MealLogItem {
+  id: string;
+  mealType: MealPeriod;
+  mealLabelTh: string; // มื้อเช้า, มื้อเที่ยง, มื้อเย็น, ของว่าง
+  productId: string;
+  productName: string;
+  brand: string;
+  portion: number; // 0.5, 1, 1.5, 2
+  brothDrunkPercent?: number; // 0 - 100%
+  nutrition: {
+    calories: number;
+    sodiumMg: number;
+    sugarG: number;
+    saturatedFatG: number;
+  };
+  timestamp: string;
+  healthierChoice: boolean;
+  categoryLabel: string;
+}
+
+export interface GroceryCartItem {
+  id: string;
+  product: FoodProduct;
+  originalProduct?: FoodProduct;
+  quantity: number;
+  sodiumSavedMg: number;
+  sugarSavedG: number;
+  satFatSavedG: number;
+  checked: boolean;
+  addedAt: string;
+}
+
+export interface FoodAdditive {
+  code: string; // e.g. E621
+  nameTh: string;
+  nameEn: string;
+  category: string;
+  safetyStatus: 'safe' | 'caution' | 'warning';
+  safetySummaryTh: string;
+  fdaPermitted: boolean;
+  maxLimitCodex?: string;
+  sensitiveGroups: string[];
+}
+

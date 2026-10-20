@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FoodProduct, UserHealthProfile } from '../types';
+import { FoodProduct, UserHealthProfile, GroceryCartItem } from '../types';
 import { calculateChoiceScore } from '../lib/scoreCalculator';
+import { playTactileTap, playSuccessChime, triggerCelebrationConfetti } from '../lib/hapticAudio';
 import {
   RefreshCw,
   Sparkles,
@@ -20,21 +21,36 @@ import {
   Info,
   Calendar,
   PackagePlus,
+  ShoppingCart,
+  CheckSquare,
+  Square,
+  Trash2,
+  Copy,
+  CheckCircle,
 } from 'lucide-react';
 
 interface SmartSwapSectionProps {
   products: FoodProduct[];
   profile: UserHealthProfile;
   initialTargetSwapId?: string | null;
+  groceryCart?: GroceryCartItem[];
   onApplySwapToConsumed: (originalProduct: FoodProduct, swappedProduct: FoodProduct) => void;
+  onAddToGroceryCart?: (swappedProduct: FoodProduct, originalProduct?: FoodProduct) => void;
+  onToggleCartItem?: (id: string) => void;
+  onRemoveCartItem?: (id: string) => void;
 }
 
 export const SmartSwapSection: React.FC<SmartSwapSectionProps> = ({
   products,
   profile,
   initialTargetSwapId,
+  groceryCart = [],
   onApplySwapToConsumed,
+  onAddToGroceryCart,
+  onToggleCartItem,
+  onRemoveCartItem,
 }) => {
+  const [copyToast, setCopyToast] = useState(false);
   // Find pairs of original and smart swap products
   const allSwapPairs = products
     .filter((p) => p.smartSwapId)
@@ -96,8 +112,28 @@ export const SmartSwapSection: React.FC<SmartSwapSectionProps> = ({
 
   const handleApply = () => {
     onApplySwapToConsumed(activePair.original, activePair.swapped);
+    playSuccessChime();
+    triggerCelebrationConfetti();
     setAppliedSuccess(true);
     setTimeout(() => setAppliedSuccess(false), 2500);
+  };
+
+  const handleCopyShoppingList = () => {
+    if (groceryCart.length === 0) return;
+    const text = [
+      '🛒 รายการซื้อของสุขภาพ (ChoiceGuard Shopping List):',
+      ...groceryCart.map(
+        (item, idx) =>
+          `${idx + 1}. [${item.checked ? '✓' : ' '}] ${item.product.name} (${item.product.brand}) - ประหยัดโซเดียม ${item.sodiumSavedMg} มก.`
+      ),
+      '',
+      `รวมประหยัดโซเดียมได้ทั้งสิ้น: ${groceryCart.reduce((acc, i) => acc + i.sodiumSavedMg, 0).toLocaleString()} มก.!`,
+    ].join('\n');
+
+    navigator.clipboard.writeText(text);
+    playSuccessChime();
+    setCopyToast(true);
+    setTimeout(() => setCopyToast(false), 2500);
   };
 
   return (
@@ -355,26 +391,43 @@ export const SmartSwapSection: React.FC<SmartSwapSectionProps> = ({
             <div className="text-[11px] text-slate-500">
               รหัสล็อต: <span className="font-mono text-teal-800 font-bold">{activePair.swapped.traceabilityLotCode}</span>
             </div>
-            <button
-              onClick={handleApply}
-              className={`glass-button text-xs py-2 px-4 font-bold transition flex items-center gap-1.5 ${
-                appliedSuccess
-                  ? 'bg-emerald-600 text-white'
-                  : 'glass-button-primary'
-              }`}
-            >
-              {appliedSuccess ? (
-                <>
-                  <Check className="h-4 w-4" />
-                  <span>สลับสำเร็จ! ปรับงบรายวันแล้ว</span>
-                </>
-              ) : (
-                <>
-                  <HeartHandshake className="h-4 w-4" />
-                  <span>สลับช้อยส์นี้ (Apply Swap)</span>
-                </>
+            <div className="flex items-center gap-2">
+              {onAddToGroceryCart && (
+                <button
+                  onClick={() => {
+                    playSuccessChime();
+                    triggerCelebrationConfetti();
+                    onAddToGroceryCart(activePair.swapped, activePair.original);
+                  }}
+                  className="glass-button bouncy-hover text-xs py-2 px-3 font-bold text-teal-800 bg-white hover:bg-teal-50 border border-teal-300 flex items-center gap-1.5 shadow-xs"
+                  title="ใส่ลงตะกร้าซื้อของเพื่อเตรียมไปซื้อที่ 7-Eleven / ซูเปอร์มาร์เก็ต"
+                >
+                  <ShoppingCart className="h-3.5 w-3.5 text-teal-600" />
+                  <span>ใส่ตะกร้าช้อปปิ้ง</span>
+                </button>
               )}
-            </button>
+
+              <button
+                onClick={handleApply}
+                className={`glass-button bouncy-hover text-xs py-2 px-4 font-bold transition flex items-center gap-1.5 ${
+                  appliedSuccess
+                    ? 'bg-emerald-600 text-white shadow-md'
+                    : 'glass-button-primary shadow-sm'
+                }`}
+              >
+                {appliedSuccess ? (
+                  <>
+                    <Check className="h-4 w-4" />
+                    <span>สลับสำเร็จ! ปรับงบรายวันแล้ว</span>
+                  </>
+                ) : (
+                  <>
+                    <HeartHandshake className="h-4 w-4" />
+                    <span>สลับช้อยส์นี้ (Apply Swap)</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -481,6 +534,157 @@ export const SmartSwapSection: React.FC<SmartSwapSectionProps> = ({
             <strong>ข้อแนะนำจากนักกำหนดอาหาร:</strong> หากทานบะหมี่กึ่งสำเร็จรูป การไม่ซดน้ำซุปจนหมด สามารถลดโซเดียมได้เพิ่มขึ้นอีกถึง 40-50% ทันที
           </span>
         </div>
+      </div>
+
+      {/* 3. Deep Feature: Persistent Healthy Grocery Cart (ตะกร้าสินค้าสุขภาพ & เซฟโซเดียม) */}
+      <div className="glass-panel p-6 border border-teal-500/30 shadow-md">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-700 border border-teal-500/20">
+              <ShoppingCart className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h4 className="font-extrabold text-base md:text-lg text-slate-900">
+                  ตะกร้าช้อปปิ้งสินค้าสุขภาพ (Healthy Grocery Checklist)
+                </h4>
+                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-teal-100 text-teal-800">
+                  {groceryCart.length} รายการ
+                </span>
+              </div>
+              <p className="text-xs text-slate-500">
+                รายการสินค้าตราทางเลือกสุขภาพที่เตรียมซื้อที่ 7-Eleven / ซูเปอร์มาร์เก็ต พร้อมคำนวณโซเดียมที่หลีกเลี่ยงได้
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+            {copyToast && (
+              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 animate-fadeIn flex items-center gap-1">
+                <CheckCircle className="h-3.5 w-3.5 text-emerald-600" />
+                คัดลอกลงคลิปบอร์ดแล้ว!
+              </span>
+            )}
+            <button
+              onClick={handleCopyShoppingList}
+              disabled={groceryCart.length === 0}
+              className="glass-button bouncy-hover text-xs py-2 px-3.5 font-bold text-teal-800 bg-white hover:bg-teal-50 border border-teal-200 flex items-center gap-1.5 shadow-xs disabled:opacity-50"
+            >
+              <Copy className="h-3.5 w-3.5 text-teal-600" />
+              <span>คัดลอกรายการไป LINE / Notes</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Total Avoided Ledger Banner */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
+          <div className="p-3.5 rounded-2xl bg-teal-50/70 border border-teal-200">
+            <span className="text-[11px] text-teal-800 font-semibold block">โซเดียมที่ประหยัดได้ในตะกร้านี้:</span>
+            <div className="text-xl font-black text-teal-900 mt-0.5">
+              {groceryCart.reduce((acc, item) => acc + item.sodiumSavedMg, 0).toLocaleString()} <span className="text-xs font-normal">มก.</span>
+            </div>
+            <div className="text-[10px] text-teal-700 mt-0.5">
+              = ป้องกันเกลือสะสม ~{(groceryCart.reduce((acc, item) => acc + item.sodiumSavedMg, 0) / 2000).toFixed(1)} ช้อนชา
+            </div>
+          </div>
+
+          <div className="p-3.5 rounded-2xl bg-cyan-50/70 border border-cyan-200">
+            <span className="text-[11px] text-cyan-800 font-semibold block">น้ำตาลที่ประหยัดได้:</span>
+            <div className="text-xl font-black text-cyan-900 mt-0.5">
+              {groceryCart.reduce((acc, item) => acc + item.sugarSavedG, 0)} <span className="text-xs font-normal">กรัม</span>
+            </div>
+            <div className="text-[10px] text-cyan-700 mt-0.5">
+              = หลีกเลี่ยงน้ำตาลก้อน ~{Math.round(groceryCart.reduce((acc, item) => acc + item.sugarSavedG, 0) / 4)} ก้อน
+            </div>
+          </div>
+
+          <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200">
+            <span className="text-[11px] text-emerald-800 font-semibold block">สถานะการซื้อ:</span>
+            <div className="text-xl font-black text-emerald-900 mt-0.5">
+              {groceryCart.filter((i) => i.checked).length} / {groceryCart.length} <span className="text-xs font-normal">ซื้อแล้ว</span>
+            </div>
+            <div className="text-[10px] text-emerald-700 mt-0.5">
+              {groceryCart.filter((i) => i.checked).length === groceryCart.length && groceryCart.length > 0
+                ? '✓ ซื้อครบทุกรายการแล้ว!'
+                : 'พร้อมช้อปปิ้งสุขภาพ'}
+            </div>
+          </div>
+        </div>
+
+        {/* Grocery Item Checklist */}
+        {groceryCart.length === 0 ? (
+          <div className="text-center py-8 text-xs text-slate-400 bg-slate-50/60 rounded-2xl border border-dashed border-slate-200">
+            ตะกร้าช้อปปิ้งยังว่างอยู่ — กดปุ่ม &quot;ใส่ตะกร้าช้อปปิ้ง&quot; จากคู่สลับสินค้าด้านบน เพื่อจัดเตรียมรายการซื้อของสุขภาพ
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {groceryCart.map((item) => (
+              <div
+                key={item.id}
+                className={`flex items-center justify-between p-3 rounded-2xl border transition ${
+                  item.checked
+                    ? 'bg-emerald-50/40 border-emerald-300 opacity-80'
+                    : 'bg-white border-slate-200 hover:border-teal-400 shadow-xs'
+                }`}
+              >
+                <div className="flex items-center gap-3 min-w-0 pr-3">
+                  <button
+                    onClick={() => {
+                      playTactileTap();
+                      onToggleCartItem && onToggleCartItem(item.id);
+                    }}
+                    className="p-1 text-teal-700 hover:text-teal-800 flex-shrink-0"
+                    title={item.checked ? 'ทำเครื่องหมายว่ายังไม่ซื้อ' : 'ทำเครื่องหมายว่าซื้อแล้ว'}
+                  >
+                    {item.checked ? (
+                      <CheckSquare className="h-5 w-5 text-emerald-600" />
+                    ) : (
+                      <Square className="h-5 w-5 text-slate-400" />
+                    )}
+                  </button>
+
+                  <img
+                    src={item.product.imageUrl}
+                    alt={item.product.name}
+                    className="w-10 h-10 rounded-xl object-cover border border-slate-200 flex-shrink-0"
+                  />
+
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`text-xs font-bold ${item.checked ? 'line-through text-slate-500' : 'text-slate-900'}`}>
+                        {item.product.name}
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">
+                        {item.product.brand}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
+                      <span className="text-emerald-700 font-bold">เซฟโซเดียม: -{item.sodiumSavedMg} มก.</span>
+                      {item.originalProduct && (
+                        <span className="text-slate-400 hidden sm:inline">
+                          (แทน {item.originalProduct.name.slice(0, 20)}...)
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {onRemoveCartItem && (
+                  <button
+                    onClick={() => {
+                      playTactileTap();
+                      onRemoveCartItem(item.id);
+                    }}
+                    className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition"
+                    title="ลบออกจากตะกร้า"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

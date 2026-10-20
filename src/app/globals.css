@@ -54,9 +54,12 @@
   --text-subtle: #64748b;
   --bg-canvas: #f8fafc;
 
-  /* Transitions */
+  /* Transitions & Apple HIG Spring Physics (WWDC 2025) */
   --transition-fluid: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-fast: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --spring-snappy: cubic-bezier(0.2, 0.85, 0.25, 1.15);
+  --spring-smooth: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 [data-theme='dark'] {
@@ -262,15 +265,18 @@ body {
   100% { transform: translate(-30px, 40px) scale(0.95); }
 }
 
-/* Reusable Liquid Glass Classes */
+/* ==========================================================================
+   Apple HIG Liquid Glass & Bouncy Spring Physics System (WWDC 2025)
+   ========================================================================== */
+
 .glass-panel {
   background: var(--glass-bg);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
   border: var(--glass-border);
   box-shadow: var(--glass-highlight), var(--glass-shadow-md);
-  border-radius: var(--radius-md);
-  transition: var(--transition-fluid);
+  border-radius: var(--radius-lg);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, background 0.3s ease;
 }
 
 .glass-panel:hover {
@@ -284,14 +290,15 @@ body {
   border: var(--glass-border);
   box-shadow: var(--glass-highlight), var(--glass-shadow-sm);
   border-radius: var(--radius-md);
-  transition: var(--transition-fluid);
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  position: relative;
 }
 
 .glass-card:hover {
   background: var(--glass-bg-hover);
   border: var(--glass-border-strong);
-  box-shadow: var(--glass-highlight), var(--glass-shadow-md);
-  transform: translateY(-2px);
+  box-shadow: var(--glass-highlight), var(--glass-shadow-md), 0 0 20px rgba(13, 148, 136, 0.12);
+  transform: translateY(-3px) scale(1.01);
 }
 
 .glass-pill {
@@ -301,7 +308,15 @@ body {
   border: var(--glass-border);
   border-radius: var(--radius-full);
   box-shadow: var(--glass-highlight), var(--glass-shadow-sm);
-  transition: var(--transition-fast);
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, border-color 0.2s ease;
+}
+
+.glass-pill:hover {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.glass-pill:active {
+  transform: scale(0.96);
 }
 
 .glass-button {
@@ -321,7 +336,7 @@ body {
   border-radius: var(--radius-full);
   box-shadow: var(--glass-highlight), var(--glass-shadow-sm);
   color: var(--text-main);
-  transition: var(--transition-fast);
+  transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   user-select: none;
 }
 
@@ -329,25 +344,60 @@ body {
   background: var(--glass-bg-hover);
   border: var(--glass-border-strong);
   box-shadow: var(--glass-highlight), var(--glass-shadow-md);
-  transform: translateY(-1px);
+  transform: translateY(-2px) scale(1.025);
 }
 
 .glass-button:active {
   background: var(--glass-bg-active);
-  transform: scale(0.97);
+  transform: scale(0.93);
 }
 
 .glass-button-primary {
   background: linear-gradient(135deg, #0d9488, #0284c7);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 8px 20px -4px rgba(13, 148, 136, 0.45);
 }
 
 .glass-button-primary:hover {
   background: linear-gradient(135deg, #14b8a6, #0369a1);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 12px 24px -4px rgba(13, 148, 136, 0.55);
-  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 12px 28px -4px rgba(13, 148, 136, 0.6);
+  transform: translateY(-2.5px) scale(1.03);
+}
+
+.glass-button-primary:active {
+  transform: scale(0.92);
+}
+
+.bouncy-hover {
+  transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.bouncy-hover:hover {
+  transform: scale(1.04) translateY(-1px);
+}
+.bouncy-hover:active {
+  transform: scale(0.94);
+}
+
+@keyframes springBounceIn {
+  0% { transform: scale(0.88) translateY(14px); opacity: 0; }
+  65% { transform: scale(1.03) translateY(-3px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.animate-springIn {
+  animation: springBounceIn 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes shimmerGlow {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer-active {
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(20, 184, 166, 0.2) 50%, rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmerGlow 2.5s infinite;
 }
 
 .glass-input {
@@ -456,3 +506,88 @@ body {
     padding-right: 2.5rem;
   }
 }
+
+/* ==========================================================================
+   Bouncy Spring Physics Classes & Custom Controls (Apple HIG)
+   ========================================================================== */
+.bouncy-hover {
+  transition: transform 0.28s var(--spring-bounce), box-shadow 0.25s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+.bouncy-hover:hover {
+  transform: translateY(-2.5px) scale(1.02);
+}
+.bouncy-hover:active {
+  transform: scale(0.95);
+}
+
+.bouncy-press {
+  transition: transform 0.2s var(--spring-bounce);
+}
+.bouncy-press:active {
+  transform: scale(0.92);
+}
+
+.bouncy-badge {
+  transition: transform 0.3s var(--spring-bounce);
+}
+.bouncy-badge:hover {
+  transform: scale(1.08) rotate(-1deg);
+}
+
+/* Custom Ergonomic Range Slider for Fluid Broth / Portion Control */
+input[type=range] {
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(13, 148, 136, 0.18);
+  border: 1px solid rgba(13, 148, 136, 0.25);
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 22px;
+  width: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0d9488, #059669);
+  cursor: grab;
+  box-shadow: 0 3px 10px rgba(13, 148, 136, 0.45);
+  border: 2.5px solid #ffffff;
+  margin-top: -7px;
+  transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+input[type=range]::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.6);
+}
+input[type=range]::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(0.9);
+}
+
+/* Shimmer Highlight for Healthier Choice certified products */
+@keyframes shimmerPass {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+.shimmer-badge {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-badge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  animation: shimmerPass 2.8s infinite;
+}
+

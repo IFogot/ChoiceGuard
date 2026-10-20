@@ -1,12 +1,13 @@
-'use client';
-
-import React from 'react';
-import { UserHealthProfile } from '../types';
-import { Flame, Droplets, HeartPulse, Users, ShieldAlert, Heart, Sparkles, UserCheck } from 'lucide-react';
+import React, { useState } from 'react';
+import { UserHealthProfile, MealLogItem } from '../types';
+import { Flame, Droplets, HeartPulse, Users, ShieldAlert, Heart, Sparkles, UserCheck, Utensils, ChevronDown, ChevronUp, Trash2, Clock, PlusCircle } from 'lucide-react';
+import { playTactileTap } from '../lib/hapticAudio';
 
 interface DailyBudgetProps {
   profile: UserHealthProfile;
   familyProfiles?: UserHealthProfile[];
+  mealLogs?: MealLogItem[];
+  onRemoveMealLog?: (id: string) => void;
   onSelectFamilyMember?: (profile: UserHealthProfile) => void;
   onOpenProfileSettings?: () => void;
 }
@@ -14,9 +15,12 @@ interface DailyBudgetProps {
 export const DailyBudgetRing: React.FC<DailyBudgetProps> = ({
   profile,
   familyProfiles = [],
+  mealLogs = [],
+  onRemoveMealLog,
   onSelectFamilyMember,
   onOpenProfileSettings,
 }) => {
+  const [isDiaryExpanded, setIsDiaryExpanded] = useState(false);
   const { dailyBudget, dailyConsumed } = profile;
 
   // Percentage calculations
@@ -40,6 +44,13 @@ export const DailyBudgetRing: React.FC<DailyBudgetProps> = ({
   const strokeOffsetSodium = circumferenceSodium - (Math.min(100, sodiumPercent) / 100) * circumferenceSodium;
   const strokeOffsetSugar = circumferenceSugar - (Math.min(100, sugarPercent) / 100) * circumferenceSugar;
   const strokeOffsetFat = circumferenceFat - (Math.min(100, satFatPercent) / 100) * circumferenceFat;
+
+  const mealIcons: Record<string, string> = {
+    breakfast: '🌅',
+    lunch: '☀️',
+    dinner: '🌙',
+    snack: '🍎',
+  };
 
   return (
     <div className="glass-card p-5 md:p-6 mb-6 border border-slate-200/80 shadow-md">
@@ -66,8 +77,11 @@ export const DailyBudgetRing: React.FC<DailyBudgetProps> = ({
               return (
                 <button
                   key={member.id}
-                  onClick={() => onSelectFamilyMember && onSelectFamilyMember(member)}
-                  className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-300 ${
+                  onClick={() => {
+                    playTactileTap();
+                    onSelectFamilyMember && onSelectFamilyMember(member);
+                  }}
+                  className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bouncy-hover ${
                     isSelected
                       ? 'bg-gradient-to-r from-teal-700 to-emerald-700 text-white shadow-sm ring-2 ring-teal-500/40 scale-[1.02]'
                       : 'bg-white/80 hover:bg-white text-slate-700 border border-slate-200 hover:border-slate-300'
@@ -239,6 +253,99 @@ export const DailyBudgetRing: React.FC<DailyBudgetProps> = ({
             </div>
           </div>
         </div>
+      </div>
+
+      {/* 3. Deep Feature: Today's Meal Diary (บันทึกมื้ออาหารวันนี้ & คืนโควตาสด) */}
+      <div className="mt-5 pt-4 border-t border-slate-200/70">
+        <button
+          onClick={() => {
+            playTactileTap();
+            setIsDiaryExpanded(!isDiaryExpanded);
+          }}
+          className="w-full flex items-center justify-between text-left group p-1.5 -m-1.5 rounded-xl hover:bg-slate-100/60 transition"
+        >
+          <div className="flex items-center gap-2">
+            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-teal-500/10 text-teal-700">
+              <Utensils className="h-3.5 w-3.5" />
+            </div>
+            <span className="text-xs font-bold text-slate-800">
+              บันทึกมื้ออาหารวันนี้ ({mealLogs.length} รายการที่บริโภคแล้ว)
+            </span>
+            <span className="text-[10px] text-teal-700 font-semibold bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200 hidden sm:inline">
+              แคลอรี่รวม: {dailyConsumed.caloriesKcal || mealLogs.reduce((acc, m) => acc + m.nutrition.calories, 0)} kcal
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-xs font-bold text-teal-700">
+            <span>{isDiaryExpanded ? 'ย่อไดอารี่' : 'ดูรายละเอียดมื้ออาหาร'}</span>
+            {isDiaryExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </div>
+        </button>
+
+        {isDiaryExpanded && (
+          <div className="mt-3.5 space-y-2 animate-fadeIn">
+            {mealLogs.length === 0 ? (
+              <div className="text-center py-6 text-xs text-slate-400 bg-slate-50/60 rounded-xl border border-dashed border-slate-200">
+                ยังไม่มีบันทึกอาหารสำหรับวันนี้ — คลิก &quot;บันทึกลงมื้ออาหาร&quot; จากหน้าสแกน เพื่อติดตามโควตาแบบเรียลไทม์
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {mealLogs.map((log) => (
+                  <div
+                    key={log.id}
+                    className="flex items-center justify-between p-3 rounded-xl bg-white/90 border border-slate-200 shadow-xs hover:border-teal-400 transition"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                      <span className="text-base flex-shrink-0" title={log.mealLabelTh}>
+                        {mealIcons[log.mealType] || '🍽️'}
+                      </span>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-xs font-bold text-slate-800 truncate max-w-[170px]">
+                            {log.productName}
+                          </span>
+                          <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">
+                            {log.portion}x
+                          </span>
+                          {log.healthierChoice && (
+                            <span className="text-[9px] font-extrabold text-teal-700 bg-teal-50 px-1 rounded border border-teal-200">
+                              อย.
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[10px] text-slate-500 flex items-center gap-2 mt-0.5">
+                          <span className="text-teal-700 font-bold">{log.nutrition.sodiumMg} mg Na</span>
+                          <span>•</span>
+                          <span>{log.nutrition.calories} kcal</span>
+                          <span>•</span>
+                          <span className="text-slate-400">{log.timestamp}</span>
+                          {log.brothDrunkPercent !== undefined && log.brothDrunkPercent < 100 && (
+                            <span className="text-emerald-700 font-bold bg-emerald-50 px-1 rounded">
+                              ซดน้ำ {log.brothDrunkPercent}%
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {onRemoveMealLog && (
+                      <button
+                        onClick={() => {
+                          playTactileTap();
+                          onRemoveMealLog(log.id);
+                        }}
+                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                        title="ลบรายการนี้ และคืนโควตาโภชนาการ"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
