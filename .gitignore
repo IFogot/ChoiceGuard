@@ -21,6 +21,7 @@
 .env*.local
 .env
 .env.*
+!.env.example
 
 # Vercel
 .vercel
