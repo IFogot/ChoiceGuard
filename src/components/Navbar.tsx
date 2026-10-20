@@ -35,7 +35,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header className="sticky top-4 z-40 px-3 md:px-6 mb-6">
       <nav
-        className="glass-panel mx-auto flex flex-wrap items-center justify-between gap-3 px-4 py-3 md:px-6 md:py-3.5"
+        aria-label="ChoiceGuard primary navigation"
+        className="glass-panel glass-navbar mx-auto flex flex-wrap items-center justify-between gap-3 px-4 py-3 md:px-6 md:py-3.5"
         style={{
           borderRadius: 'var(--radius-lg)',
           backdropFilter: 'var(--glass-blur-heavy)',
@@ -70,15 +71,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-1 sm:gap-1.5 order-3 md:order-2 w-full md:w-auto justify-center overflow-x-auto py-1">
+        <div className="glass-toolbar-group order-3 md:order-2 w-full md:w-auto justify-center overflow-x-auto py-1">
           <button
             onClick={() => {
               playTactileTap();
               setActiveTab('scan');
             }}
-            className={`glass-button bouncy-hover text-xs md:text-sm py-1.5 px-3 md:px-4 ${
-              activeTab === 'scan' ? 'glass-button-primary shadow-md' : ''
-            }`}
+            aria-current={activeTab === 'scan' ? 'page' : undefined}
+            className="glass-toolbar-item"
           >
             <Activity className="h-4 w-4" />
             <span>รู้ & สแกน</span>
@@ -89,9 +89,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               playTactileTap();
               setActiveTab('swap');
             }}
-            className={`glass-button bouncy-hover text-xs md:text-sm py-1.5 px-3 md:px-4 ${
-              activeTab === 'swap' ? 'glass-button-primary shadow-md' : ''
-            }`}
+            aria-current={activeTab === 'swap' ? 'page' : undefined}
+            className="glass-toolbar-item"
           >
             <RefreshCw className="h-4 w-4" />
             <span>เลือก (Smart Swap)</span>
@@ -102,14 +101,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               playTactileTap();
               setActiveTab('pantry');
             }}
-            className={`glass-button bouncy-hover text-xs md:text-sm py-1.5 px-3 md:px-4 relative ${
-              activeTab === 'pantry' ? 'glass-button-primary shadow-md' : ''
-            }`}
+            aria-current={activeTab === 'pantry' ? 'page' : undefined}
+            className="glass-toolbar-item relative"
           >
             <AlertTriangle className="h-4 w-4" />
             <span>ปลอดภัย (Lot Alert)</span>
             {activeRecallCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white animate-pulse">
+                <span aria-label={`${activeRecallCount} recall alerts`} className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white animate-pulse">
                 {activeRecallCount}
               </span>
             )}
@@ -120,9 +118,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               playTactileTap();
               setActiveTab('dashboard');
             }}
-            className={`glass-button bouncy-hover text-xs md:text-sm py-1.5 px-3 md:px-4 ${
-              activeTab === 'dashboard' ? 'glass-button-primary shadow-md' : ''
-            }`}
+            aria-current={activeTab === 'dashboard' ? 'page' : undefined}
+            className="glass-toolbar-item"
           >
             <Layers className="h-4 w-4" />
             <span>แดชบอร์ด B2B/B2G</span>
