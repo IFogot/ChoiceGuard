@@ -32,3 +32,8 @@ next-env.d.ts
 # VarAlign local store
 .varmem/*
 .comp/
+
+# Graphify
+graphify-out/
+.graphify/
+*graphify*
