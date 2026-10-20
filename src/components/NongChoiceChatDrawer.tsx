@@ -91,9 +91,8 @@ export const NongChoiceChatDrawer: React.FC<NongChoiceChatDrawerProps> = ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [...messages, userMsg],
+          messages: [...messages, userMsg].map(({ sender, text }) => ({ sender, text })),
           contextProduct,
-          userProfile: profile,
         }),
       });
 

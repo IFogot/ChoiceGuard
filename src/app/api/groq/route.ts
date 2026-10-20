@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { parseGroqChatRequest } from '@/lib/groq-request';
+
 const SYSTEM_PROMPT = `คุณคือ "น้องช้อยส์ (Nong Choice)" ผู้ช่วยอัจฉริยะด้านอาหารและโภชนาการส่วนบุคคลประจำแพลตฟอร์ม ChoiceGuard (ช้อยส์การ์ด) สำหรับการแข่งขัน WELLNEXT Future Pitching (สำนักงานคณะกรรมการอาหารและยา กระทรวงสาธารณสุข)
 
 หน้าที่ของคุณ:
@@ -14,20 +16,27 @@ const SYSTEM_PROMPT = `คุณคือ "น้องช้อยส์ (Nong 
 - ให้คำแนะนำเชิงการปรับพฤติกรรมและการเลือกอาหารเท่านั้น หากผู้ใช้มีอาการผิดปกติรุนแรง ให้แนะนำพบแพทย์ทันที
 - สุภาพ เป็นกันเอง อบอุ่น และใช้ภาษาไทยที่กระชับ เข้าใจง่าย`;
 
-// Pre-authorized server-side fallback key for zero-friction demo execution
-const BAKED_KEY = [
-  103, 115, 107, 95, 111, 119, 72, 72, 113, 52, 84, 108, 56, 68, 66, 87,
-  73, 121, 82, 57, 70, 105, 83, 88, 87, 71, 100, 121, 98, 51, 70, 89,
-  118, 82, 73, 84, 85, 122, 97, 49, 108, 118, 114, 116, 87, 113, 51, 55,
-  69, 118, 50, 115, 81, 90, 111, 102,
-].map((c) => String.fromCharCode(c)).join('');
-
 export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json();
-    const { messages, apiKey: userKey, contextProduct } = body;
+  const apiKey = process.env.GROQ_API_KEY?.trim();
+  if (!apiKey) {
+    return NextResponse.json(
+      { error: 'AI_UNAVAILABLE', message: 'AI assistance is not configured yet.' },
+      { status: 503 }
+    );
+  }
 
-    const apiKey = process.env.GROQ_API_KEY || userKey?.trim() || BAKED_KEY;
+  let request;
+  try {
+    request = parseGroqChatRequest(await req.json());
+  } catch {
+    return NextResponse.json(
+      { error: 'INVALID_AI_REQUEST', message: 'Unable to process this AI request.' },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const { messages, contextProduct } = request;
 
     const systemWithContext = contextProduct
       ? `${SYSTEM_PROMPT}\n\n[ข้อมูลสินค้าที่ผู้ใช้กำลังดูอยู่]:\n- ชื่อ: ${contextProduct.name}\n- หมวด: ${contextProduct.categoryLabel}\n- โซเดียม: ${contextProduct.nutrition?.sodiumMg} มก.\n- น้ำตาล: ${contextProduct.nutrition?.sugarG} กรัม\n- ไขมันอิ่มตัว: ${contextProduct.nutrition?.saturatedFatG} กรัม\n- ตราทางเลือกสุขภาพ: ${contextProduct.healthierChoiceCertified ? 'มี' : 'ไม่มี'}\n- Lot Code: ${contextProduct.traceabilityLotCode}`
@@ -49,32 +58,39 @@ export async function POST(req: NextRequest) {
         'User-Agent': 'ChoiceGuard-HealthPlatform/1.0',
       },
       body: JSON.stringify({
-        model: process.env.NEXT_PUBLIC_GROQ_MODEL || 'openai/gpt-oss-120b',
+        model: process.env.GROQ_MODEL || process.env.NEXT_PUBLIC_GROQ_MODEL || 'openai/gpt-oss-120b',
         messages: formattedMessages,
         temperature: 0.6,
         max_tokens: 1024,
       }),
+      signal: AbortSignal.timeout(20_000),
     });
 
     if (!response.ok) {
-      const errData = await response.json().catch(() => ({}));
       return NextResponse.json(
         {
           error: 'GROQ_API_ERROR',
-          message: errData.error?.message || `Groq API Error: ${response.statusText}`,
+          message: 'AI assistance is temporarily unavailable. Please try again shortly.',
         },
-        { status: response.status }
+        { status: 502 }
       );
     }
 
-    const data = await response.json();
-    const replyText = data.choices?.[0]?.message?.content || 'ขออภัยค่ะ น้องช้อยส์ไม่สามารถประมวลผลคำตอบได้ในขณะนี้';
+    const data = (await response.json()) as { choices?: Array<{ message?: { content?: string } }> };
+    const replyText = data.choices?.[0]?.message?.content?.trim();
+    if (!replyText) {
+      return NextResponse.json(
+        { error: 'GROQ_API_ERROR', message: 'AI assistance returned an empty response. Please try again.' },
+        { status: 502 }
+      );
+    }
 
     return NextResponse.json({ reply: replyText });
-  } catch (error: any) {
+  } catch (error) {
+    console.error('Groq proxy failed:', error instanceof Error ? error.name : 'unknown-error');
     return NextResponse.json(
-      { error: 'SERVER_ERROR', message: error.message || 'Internal Server Error' },
-      { status: 500 }
+      { error: 'GROQ_API_ERROR', message: 'AI assistance is temporarily unavailable. Please try again shortly.' },
+      { status: 502 }
     );
   }
 }
